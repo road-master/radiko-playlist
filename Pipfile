@@ -1,0 +1,32 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+bump2version = "*"
+# Hotfix for Pipenv's Bug @see https://github.com/pypa/pipenv/issues/4101
+colorama = "*"
+coverage = "*"
+flake8 = "*"
+invoke = "*"
+isort = "*"
+mypy = "*"
+numpy = "*"
+pipenv-setup = "*"
+pylint = "*"
+pytest = "*"
+pytest-resource-path = "*"
+radon = "*"
+# To mock requests to prevent slow test
+requests-mock = "*"
+# Locking version for stability of deployment task
+wheel = "==0.34.2"
+xenon = "*"
+radikoplaylist = {editable = true,path = "."}
+
+[packages]
+# To parse m3u8 from radiko
+m3u8 = "*"
+# To request to radiko
+requests = "*"

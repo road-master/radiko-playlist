@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urls>
+    <url areafree="1" max_delay="60" timefree="1">
+        <playlist_create_url>https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="0" max_delay="60" timefree="1">
+        <playlist_create_url>https://tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="1" max_delay="60" timefree="0">
+        <playlist_create_url>https://c-rpaa.smartstream.ne.jp/so/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="0" max_delay="60" timefree="0">
+        <playlist_create_url>https://rpaa.smartstream.ne.jp/so/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="0" max_delay="60" timefree="1">
+        <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="1" max_delay="60" timefree="1">
+        <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="1" max_delay="60" timefree="0">
+        <playlist_create_url>http://c-radiko.smartstream.ne.jp/FMT/_definst_/simul-stream.stream/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="0" max_delay="60" timefree="0">
+        <playlist_create_url>http://f-radiko.smartstream.ne.jp/FMT/_definst_/simul-stream.stream/playlist.m3u8</playlist_create_url>
+    </url>
+</urls>

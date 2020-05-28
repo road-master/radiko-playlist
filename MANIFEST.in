@@ -1,0 +1,9 @@
+include LICENSE
+include README.md
+include radikoplaylist/py.typed
+
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-include docs conf.py *.jpg *.png *.gif
