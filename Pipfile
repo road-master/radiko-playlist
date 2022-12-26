@@ -21,7 +21,7 @@ radon = "*"
 # To mock requests to prevent slow test
 requests-mock = "*"
 # Locking version for stability of deployment task
-wheel = "==0.34.2"
+wheel = "==0.38.1"
 xenon = "*"
 radikoplaylist = {editable = true,path = "."}
 
