@@ -1,13 +1,15 @@
 """Config of pytest."""
 from pathlib import Path
-from typing import cast, Generator
+from typing import cast, Generator, TYPE_CHECKING
 
 import pytest
-from pytest import FixtureRequest
 from requests.exceptions import ConnectTimeout
 from requests_mock import Mocker
 
 from tests.testlibraries.instance_resource import InstanceResource
+
+if TYPE_CHECKING:
+    from pytest import FixtureRequest
 
 
 @pytest.fixture
