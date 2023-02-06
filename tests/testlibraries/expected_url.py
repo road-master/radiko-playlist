@@ -1,6 +1,5 @@
 """Implements model of expected URL."""
-from re import Pattern
-from typing import Dict, Union
+from typing import Dict, Pattern, Union
 from urllib.parse import parse_qs, ParseResult
 
 
