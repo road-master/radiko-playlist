@@ -1,6 +1,6 @@
 """Implements instance resources."""
 import re
-from typing import Any, cast, TypeVar, Union
+from typing import Any, cast, List, TypeVar, Union
 from unittest.mock import MagicMock
 
 import numpy
@@ -89,20 +89,20 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
     PATTERN_LSID_LIVE_MASTER_PLAYLIST = re.compile(r"^[a-fA-F0-9]{38}$")
 
     @staticmethod
-    def combination(array_a: list[list[A]], array_b: list[list[B]]) -> list[list[Union[A, B]]]:
-        return [cast(list[Union[A, B]], a + b) for b in array_b for a in array_a]
+    def combination(array_a: List[List[A]], array_b: List[List[B]]) -> List[List[Union[A, B]]]:
+        return [cast(List[Union[A, B]], a + b) for b in array_b for a in array_a]
 
     @staticmethod
-    def concat(*args: list[str]) -> list[list[str]]:
+    def concat(*args: List[str]) -> List[List[str]]:
         print(args)
         transposed_args = [numpy.array([array]).transpose() for array in args]
         print(transposed_args)
-        return cast(list[list[str]], numpy.concatenate(transposed_args, axis=1).tolist())
+        return cast(List[List[str]], numpy.concatenate(transposed_args, axis=1).tolist())
 
 
 class ParameterList:
     @classmethod
-    def to_list(cls) -> list[Any]:
+    def to_list(cls) -> List[Any]:
         return [cls.__dict__[station.replace("-", "_")] for station in InstanceResource.LIST_STATION]
 
 

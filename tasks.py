@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import platform
 import shutil
-from typing import Any, cast
+from typing import Any, cast, Dict, List
 import webbrowser
 
 from invoke import Context, task
@@ -69,11 +69,11 @@ def docformatter(context: Context, check: bool = False) -> Result:
 
 @dataclass
 class DocformatterOption:
-    list_str: list[str]
+    list_str: List[str]
     enable: bool
 
 
-def build_list_options_docformatter(config: dict[str, Any], check: bool) -> list[str]:
+def build_list_options_docformatter(config: Dict[str, Any], check: bool) -> List[str]:
     """Builds list of docformatter options."""
     docformatter_options = (
         DocformatterOption(["--recursive"], "recursive" in config and config["recursive"]),

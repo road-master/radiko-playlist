@@ -1,6 +1,6 @@
 """Implements model of expected URL."""
 from re import Pattern
-from typing import Union
+from typing import Dict, Union
 from urllib.parse import parse_qs, ParseResult
 
 
@@ -15,7 +15,7 @@ class ExpectedUrl:
         path: str,
         params: str,
         fragment: str,
-        query: dict[str, Union[str, Pattern[str]]],
+        query: Dict[str, Union[str, Pattern[str]]],
     ) -> None:
         self.scheme = scheme
         self.netloc = netloc
