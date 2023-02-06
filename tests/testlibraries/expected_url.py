@@ -1,12 +1,22 @@
 """Implements model of expected URL."""
-from urllib.parse import parse_qs
+from re import Pattern
+from typing import Union
+from urllib.parse import parse_qs, ParseResult
 
 
 class ExpectedUrl:
     """Model of expected URL."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, scheme, netloc, path, params, fragment, query):
+    def __init__(
+        self,
+        scheme: str,
+        netloc: str,
+        path: str,
+        params: str,
+        fragment: str,
+        query: dict[str, Union[str, Pattern[str]]],
+    ) -> None:
         self.scheme = scheme
         self.netloc = netloc
         self.path = path
@@ -14,7 +24,7 @@ class ExpectedUrl:
         self.fragment = fragment
         self.query = query
 
-    def check(self, parse_result_url) -> None:
+    def check(self, parse_result_url: ParseResult) -> None:
         """Checks."""
         list_actual = [
             parse_result_url.scheme,
@@ -34,7 +44,7 @@ class ExpectedUrl:
             assert actual == expected, "actual = " + actual + ", expected = " + expected
         self.check_url_query(parse_result_url.query)
 
-    def check_url_query(self, query) -> None:
+    def check_url_query(self, query: str) -> None:
         """Checks URL query."""
         parsed_result_query = parse_qs(query)
         for key, expected in self.query.items():

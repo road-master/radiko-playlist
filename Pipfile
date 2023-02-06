@@ -4,28 +4,48 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+autoflake = "*"
+bandit = "*"
+black = "*"
 bump2version = "*"
+cohesion = "*"
 # Hotfix for Pipenv's Bug @see https://github.com/pypa/pipenv/issues/4101
 colorama = "*"
 coverage = "*"
+dlint = "*"
+docformatter = "*"
+dodgy = "*"
 flake8 = "*"
+# To use flake8 --radon-show-closures
+flake8-polyfill = "*"
+# Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
+# When unpin hacking, it has possibility to install too legacy version of hacking.
+hacking = ">=5.0.0"
 invoke = "*"
 isort = "*"
 mypy = "*"
 numpy = "*"
-pipenv-setup = "*"
+pipenv-setup = {version = "*", extras = ["black"]}
+pydocstyle = "*"
 pylint = "*"
 pytest = "*"
 pytest-resource-path = "*"
+pyvelocity = "*"
 radon = "*"
 # To mock requests to prevent slow test
 requests-mock = "*"
-# Locking version for stability of deployment task
-wheel = "==0.34.2"
+types-invoke = "*"
+types-requests = "*"
+# - ModuleNotFoundError: No module named 'vistir.compat' · Issue #138 · Madoshakalaka/pipenv-setup
+#   https://github.com/Madoshakalaka/pipenv-setup/issues/138
+vistir = "==0.6.1"
 xenon = "*"
 radikoplaylist = {editable = true,path = "."}
 
 [packages]
+# - dlint/DUO107.md at master · dlint-py/dlint
+#   https://github.com/dlint-py/dlint/blob/master/docs/linters/DUO107.md
+defusedxml = "*"
 # To parse m3u8 from radiko
 m3u8 = "*"
 # To request to radiko

@@ -1,9 +1,9 @@
 """Implements request model to build URL to request master playlist."""
+from abc import ABC, abstractmethod
 import datetime
 import hashlib
-import random
-from abc import ABC, abstractmethod
 from logging import getLogger
+from random import SystemRandom
 from typing import Mapping, Union
 
 from radikoplaylist.playlist_create_url_getter import PlaylistCreateUrlGetter
@@ -26,7 +26,7 @@ class MasterPlaylistRequest(ABC):
         return url
 
     @abstractmethod
-    def build_query(self):
+    def build_query(self) -> str:
         raise NotImplementedError()  # pragma: no cover
 
     @staticmethod
@@ -41,7 +41,7 @@ class LiveMasterPlaylistRequest(MasterPlaylistRequest):
     def __init__(self, station_id: str):
         super().__init__(station_id, False)
 
-    def build_query(self):
+    def build_query(self) -> str:
         return "station_id=" + self.station_id + "&" "l=15&" "lsid=" + self.generate_uid() + "&" "type=b"
 
     @staticmethod
@@ -57,7 +57,7 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         self.start_at = start_at
         self.end_at = end_at
 
-    def build_query(self):
+    def build_query(self) -> str:
         return (
             "station_id=" + self.station_id + "&"
             "start_at=" + str(self.start_at) + "&"
@@ -71,6 +71,7 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
 
     @staticmethod
     def generate_uid() -> str:
-        rnd = random.random() * 1000000000
+        rnd = SystemRandom().random() * 1000000000
         micro_second = datetime.timedelta.total_seconds(datetime.datetime.now() - datetime.datetime(1970, 1, 1)) * 1000
-        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()
+        # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
+        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: DUO130  # nosec

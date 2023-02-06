@@ -1,26 +1,31 @@
-"""Tests for radikoplaylist.master_playlist_request"""
+"""Tests for radikoplaylist.master_playlist_request."""
 import re
 from urllib.parse import urlparse
 
-import pytest  # type: ignore
+import pytest
 
 from radikoplaylist.master_playlist_request import LiveMasterPlaylistRequest, TimeFreeMasterPlaylistRequest
+from tests.testlibraries.expected_url import ExpectedUrl
 from tests.testlibraries.instance_resource import InstanceResource, ParameterExpectedUrl
 
 
 class TestMasterPlaylistRequest:
-    """Tests for MasterPlaylistRequest"""
+    """Tests for MasterPlaylistRequest."""
 
     @staticmethod
     @pytest.mark.parametrize(
         "mock_get_playlist_create_url, station, expected_url",
         InstanceResource.concat(
-            InstanceResource.LIST_STATION, InstanceResource.LIST_STATION, ParameterExpectedUrl.to_list(),
+            InstanceResource.LIST_STATION,
+            InstanceResource.LIST_STATION,
+            ParameterExpectedUrl.to_list(),
         ),
         indirect=["mock_get_playlist_create_url"],
     )
     # pylint: disable=unused-argument
-    def test_make_master_playlist_url(mock_get_playlist_create_url, station, expected_url) -> None:
+    def test_make_master_playlist_url(
+        mock_get_playlist_create_url: None, station: str, expected_url: ExpectedUrl
+    ) -> None:
         """Method build_url() should build_url appropriate URL."""
         url = LiveMasterPlaylistRequest(station).build_url(InstanceResource.HEADERS_EXAMPLE)  # type: ignore
         parse_result_url = urlparse(url)
