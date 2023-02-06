@@ -34,6 +34,7 @@ pyvelocity = {version = "*", markers="python_version >= '3.9'"}
 radon = "*"
 # To mock requests to prevent slow test
 requests-mock = "*"
+tomli = {version = "*", markers="python_version <= '3.5'"}
 types-invoke = "*"
 types-requests = "*"
 # - ModuleNotFoundError: No module named 'vistir.compat' · Issue #138 · Madoshakalaka/pipenv-setup
