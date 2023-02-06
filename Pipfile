@@ -25,12 +25,12 @@ invoke = "*"
 isort = "*"
 mypy = "*"
 numpy = "*"
-pipenv-setup = {version = "*", extras = ["black"]}
+pipenv-setup = {version = "*", extras = ["black"], markers="python_version >= '3.7'"}
 pydocstyle = "*"
 pylint = "*"
 pytest = "*"
 pytest-resource-path = "*"
-pyvelocity = "*"
+pyvelocity = {version = "*", markers="python_version >= '3.9'"}
 radon = "*"
 # To mock requests to prevent slow test
 requests-mock = "*"
