@@ -4,7 +4,7 @@
 
 from setuptools import find_packages, setup  # type: ignore
 
-with open("README.md") as readme_file:
+with open("README.md", encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
 setup(
@@ -28,7 +28,7 @@ setup(
         "Typing :: Typed",
     ],
     description="Accesses to radiko API, gets media playlist URL and built header for HTTP request to its URL.",
-    install_requires=["m3u8", "requests"],
+    install_requires=["defusedxml", "m3u8", "requests"],
     dependency_links=[],
     long_description=readme,
     long_description_content_type="text/markdown",

@@ -35,11 +35,11 @@ class Authorization:
 
     def auth(self) -> Dict[str, Union[str, bytes]]:
         """Authorizes radiko API and returns authorized HTTP headers."""
-        res = Requester.get(Authorization._AUTH1_URL, self._headers)  # type: ignore
+        res = Requester.get(Authorization._AUTH1_URL, self._headers)
         self._headers["X-Radiko-AuthToken"] = self._get_auth_token(res)
         # noinspection PyTypeChecker
         self._headers["X-Radiko-Partialkey"] = self._get_partial_key(res)  # type: ignore
-        res = Requester.get(Authorization._AUTH2_URL, self._headers)  # type: ignore
+        res = Requester.get(Authorization._AUTH2_URL, self._headers)
         self.logger.debug("authenticated headers:%s", self._headers)
         self.logger.debug("res.headers:%s", res.headers)
         self.logger.debug("res.content:%s", res.content)
@@ -53,9 +53,10 @@ class Authorization:
 
     @staticmethod
     def _get_partial_key(response: Response) -> bytes:
-        """
-        Gets partial key for authorize from HTTP response.
+        """Gets partial key for authorize from HTTP response.
+
         Algorithm is based on function createPartialkey() in following URL.
+
         @see http://radiko.jp/apps/js/radikoJSPlayer.js
         """
         length = int(response.headers["X-Radiko-KeyLength"])

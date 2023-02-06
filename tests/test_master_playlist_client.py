@@ -1,13 +1,14 @@
-"""Test for radikoplaylist.master_playlist_client"""
-import pytest  # type: ignore
+"""Test for radikoplaylist.master_playlist_client."""
+import pytest
+from requests_mock import Mocker
 
-from radikoplaylist import MasterPlaylistClient, TimeFreeMasterPlaylistRequest
 from radikoplaylist.exceptions import BadHttpStatusCodeError
+from radikoplaylist import MasterPlaylistClient, TimeFreeMasterPlaylistRequest
 from tests.testlibraries.instance_resource import InstanceResource
 
 
 class TestMasterPlaylistClient:
-    """Test fpr MasterPlaylistClient"""
+    """Test fpr MasterPlaylistClient."""
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -15,8 +16,9 @@ class TestMasterPlaylistClient:
         InstanceResource.concat(InstanceResource.LIST_STATION, InstanceResource.LIST_STATION),
         indirect=["mock_get_playlist_create_url"],
     )
+    @pytest.mark.usefixtures("mock_auth_1", "mock_auth_2")
     # pylint: disable=unused-argument
-    def test(mock_auth_1, mock_auth_2, mock_get_playlist_create_url, requests_mock, station) -> None:
+    def test(mock_get_playlist_create_url: None, requests_mock: Mocker, station: str) -> None:
         """Method build_url() should reutrn appropriate master playlist."""
         date_time_start = 20200518215700
         date_time_end = 20200518220000
@@ -39,12 +41,16 @@ class TestMasterPlaylistClient:
         "status_code, mock_get_playlist_create_url, station",
         InstanceResource.combination(
             [[value] for value in InstanceResource.LIST_STATUS_CODE_ERROR],
-            InstanceResource.concat(["NACK5"], ["NACK5"],),
+            InstanceResource.concat(
+                ["NACK5"],
+                ["NACK5"],
+            ),
         ),
         indirect=["mock_get_playlist_create_url"],
     )
-    # pylint: disable=unused-argument,too-many-arguments
-    def test_error(mock_auth_1, mock_auth_2, mock_get_playlist_create_url, requests_mock, status_code, station) -> None:
+    @pytest.mark.usefixtures("mock_auth_1", "mock_auth_2")
+    # pylint: disable=unused-argument
+    def test_error(mock_get_playlist_create_url: None, requests_mock: Mocker, status_code: int, station: str) -> None:
         """Method build_url() should raise error when HTTP status code is not 200."""
         date_time_start = 20200518215700
         date_time_end = 20200518220000

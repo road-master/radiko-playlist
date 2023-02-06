@@ -1,10 +1,14 @@
 """Implements instance resources."""
 import re
+from typing import Any, cast, List, TypeVar, Union
 from unittest.mock import MagicMock
 
-import numpy  # type: ignore
+import numpy
 
 from tests.testlibraries.expected_url import ExpectedUrl
+
+A = TypeVar("A")
+B = TypeVar("B")
 
 
 # pylint: disable=too-few-public-methods
@@ -14,7 +18,8 @@ class InstanceResource:
     URL_RADIKO_AUTH_1 = "https://radiko.jp/v2/api/auth1"
     URL_RADIKO_AUTH_2 = "https://radiko.jp/v2/api/auth2"
     URL_RADIKO_STREAM_PC_HTML_5 = "http://radiko.jp/v3/station/stream/pc_html5/"
-    RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"
+    # Reason: This is not hardcoded password
+    RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # nosec
     RADIKO_KEY_LENGTH_EXAMPLE = "16"
     RADIKO_KEY_OFFSET_EXAMPLE = "16"
     RESPONSE_HEADER_AUTH_1_EXAMPLE = {
@@ -38,7 +43,10 @@ https://rpaa.smartstream.ne.jp/medialist?session=Q3fHC9Smzp8x49j9AqicBL
 https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
 """
     ).encode("utf-8")
-    MOCK_GENERATE_UID = MagicMock(name="generate_uid", return_value="45f59aed8851994d2d5ecc8e7a946018",)
+    MOCK_GENERATE_UID = MagicMock(
+        name="generate_uid",
+        return_value="45f59aed8851994d2d5ecc8e7a946018",
+    )
     LIST_STATUS_CODE_ERROR = [
         400,
         403,
@@ -80,21 +88,21 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
     }
     PATTERN_LSID_LIVE_MASTER_PLAYLIST = re.compile(r"^[a-fA-F0-9]{38}$")
 
-    @classmethod
-    def combination(cls, array_a, array_b):
-        return [a + b for b in array_b for a in array_a]
+    @staticmethod
+    def combination(array_a: List[List[A]], array_b: List[List[B]]) -> List[List[Union[A, B]]]:
+        return [cast(List[Union[A, B]], a + b) for b in array_b for a in array_a]
 
-    @classmethod
-    def concat(cls, *args):
+    @staticmethod
+    def concat(*args: List[str]) -> List[List[str]]:
         print(args)
         transposed_args = [numpy.array([array]).transpose() for array in args]
         print(transposed_args)
-        return numpy.concatenate(transposed_args, axis=1).tolist()
+        return cast(List[List[str]], numpy.concatenate(transposed_args, axis=1).tolist())
 
 
 class ParameterList:
     @classmethod
-    def to_list(cls):
+    def to_list(cls) -> List[Any]:
         return [cls.__dict__[station.replace("-", "_")] for station in InstanceResource.LIST_STATION]
 
 
