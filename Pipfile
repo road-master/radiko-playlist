@@ -6,7 +6,7 @@ name = "pypi"
 [dev-packages]
 autoflake = "*"
 bandit = "*"
-black = "*"
+black = {version = "*", markers="python_version >= '3.7'"}
 bump2version = "*"
 cohesion = "*"
 # Hotfix for Pipenv's Bug @see https://github.com/pypa/pipenv/issues/4101
@@ -20,7 +20,7 @@ flake8 = "*"
 flake8-polyfill = "*"
 # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
 # When unpin hacking, it has possibility to install too legacy version of hacking.
-hacking = ">=5.0.0"
+hacking = {version = ">=5.0.0", markers="python_version >= '3.8'"}
 invoke = "*"
 isort = "*"
 mypy = "*"
