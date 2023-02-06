@@ -38,7 +38,7 @@ types-invoke = "*"
 types-requests = "*"
 # - ModuleNotFoundError: No module named 'vistir.compat' · Issue #138 · Madoshakalaka/pipenv-setup
 #   https://github.com/Madoshakalaka/pipenv-setup/issues/138
-vistir = "==0.6.1"
+vistir = "<=0.6.1"
 xenon = "*"
 radikoplaylist = {editable = true,path = "."}
 
