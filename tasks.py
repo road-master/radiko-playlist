@@ -2,7 +2,6 @@
 
 Execute 'invoke --list' for guidance on using Invoke
 """
-from dataclasses import dataclass
 from pathlib import Path
 import platform
 import shutil
@@ -63,14 +62,16 @@ def docformatter(context: Context, check: bool = False) -> Result:
     parsed_toml = tomli.loads(Path("pyproject.toml").read_text("UTF-8"))
     config = parsed_toml["tool"]["docformatter"]
     list_options = build_list_options_docformatter(config, check)
-    docformatter_options = f"{' '.join(list_options)}"
-    return cast(Result, context.run(f"docformatter {docformatter_options} {' '.join(PYTHON_DIRS)}", warn=True))
+    docformatter_options = " ".join(list_options)
+    return cast(
+        Result, context.run("docformatter {} {}".format(docformatter_options, " ".join(PYTHON_DIRS)), warn=True)
+    )
 
 
-@dataclass
 class DocformatterOption:
-    list_str: List[str]
-    enable: bool
+    def __init__(self, list_str: List[str], enable: bool) -> None:
+        self.list_str = list_str
+        self.enable = enable
 
 
 def build_list_options_docformatter(config: Dict[str, Any], check: bool) -> List[str]:
@@ -92,8 +93,8 @@ def build_list_options_docformatter(config: Dict[str, Any], check: bool) -> List
 
 def autoflake(context: Context, check: bool = False) -> Result:
     """Runs autoflake."""
-    autoflake_options = f"{'--recursive'} {'--check' if check else '--in-place'}"
-    return cast(Result, context.run(f"autoflake {autoflake_options} {' '.join(PYTHON_DIRS)}", warn=True))
+    autoflake_options = "--recursive {}".format("--check" if check else "--in-place")
+    return cast(Result, context.run("autoflake {} {}".format(autoflake_options, " ".join(PYTHON_DIRS)), warn=True))
 
 
 def isort(context: Context, check: bool = False) -> Result:
@@ -136,8 +137,8 @@ def lint_mypy(context: Context) -> None:
 def lint_bandit(context: Context) -> None:
     """Lints code with bandit."""
     space = " "
-    context.run(f"bandit --recursive {space.join([str(p) for p in [SOURCE_DIR, TASKS_PY]])}", pty=True)
-    context.run(f"bandit --recursive --skip B101 {TEST_DIR}", pty=True)
+    context.run("bandit --recursive {}".format(space.join([str(p) for p in [SOURCE_DIR, TASKS_PY]])), pty=True)
+    context.run("bandit --recursive --skip B101 {}".format(TEST_DIR), pty=True)
 
 
 @task
@@ -189,7 +190,7 @@ def xenon(context: Context) -> None:
 def test(context: Context) -> None:
     """Run tests."""
     pty = platform.system() == "Linux"
-    context.run("python {} test".format(SETUP_FILE), pty=pty)
+    context.run("pytest", pty=pty)
 
 
 @task(help={"publish": "Publish the result via coveralls", "xml": "Export report as xml format"})
