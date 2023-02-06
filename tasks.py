@@ -5,13 +5,16 @@ Execute 'invoke --list' for guidance on using Invoke
 from pathlib import Path
 import platform
 import shutil
+import sys
 from typing import Any, cast, Dict, List
 import webbrowser
 
 from invoke import Context, task
 from invoke.exceptions import Failure
 from invoke.runners import Result
-import tomli
+
+if sys.version_info[:3] >= (3, 6, 0):
+    import tomli
 
 ROOT_DIR = Path(__file__).parent
 SETUP_FILE = ROOT_DIR.joinpath("setup.py")
@@ -50,22 +53,24 @@ def style(context: Context, check: bool = False) -> None:
             raise Failure(result)
 
 
-@task
-def docformatter(context: Context, check: bool = False) -> Result:
-    """Runs docformatter.
+if sys.version_info[:3] >= (3, 6, 0):
 
-    This function includes hard coding of line length.
-    see:
-    - Add pyproject.toml support for config (Issue #10) by weibullguy · Pull Request #77 · PyCQA/docformatter
-      https://github.com/PyCQA/docformatter/pull/77
-    """
-    parsed_toml = tomli.loads(Path("pyproject.toml").read_text("UTF-8"))
-    config = parsed_toml["tool"]["docformatter"]
-    list_options = build_list_options_docformatter(config, check)
-    docformatter_options = " ".join(list_options)
-    return cast(
-        Result, context.run("docformatter {} {}".format(docformatter_options, " ".join(PYTHON_DIRS)), warn=True)
-    )
+    @task
+    def docformatter(context: Context, check: bool = False) -> Result:
+        """Runs docformatter.
+
+        This function includes hard coding of line length.
+        see:
+        - Add pyproject.toml support for config (Issue #10) by weibullguy · Pull Request #77 · PyCQA/docformatter
+        https://github.com/PyCQA/docformatter/pull/77
+        """
+        parsed_toml = tomli.loads(Path("pyproject.toml").read_text("UTF-8"))
+        config = parsed_toml["tool"]["docformatter"]
+        list_options = build_list_options_docformatter(config, check)
+        docformatter_options = " ".join(list_options)
+        return cast(
+            Result, context.run("docformatter {} {}".format(docformatter_options, " ".join(PYTHON_DIRS)), warn=True)
+        )
 
 
 # Reason: This is dataclass. pylint: disable=too-few-public-methods
