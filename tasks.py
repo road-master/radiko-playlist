@@ -68,6 +68,7 @@ def docformatter(context: Context, check: bool = False) -> Result:
     )
 
 
+# Reason: This is dataclass. pylint: disable=too-few-public-methods
 class DocformatterOption:
     def __init__(self, list_str: List[str], enable: bool) -> None:
         self.list_str = list_str
