@@ -49,6 +49,6 @@ class ExpectedUrl:
         for key, expected in self.query.items():
             actual = parsed_result_query[key][0]
             if not isinstance(expected, str):
-                assert expected.match(actual)
+                assert expected.match(actual), "actual = " + actual + ", expected = " + expected.pattern
             else:
                 assert actual == expected, "actual = " + actual + ", expected = " + expected

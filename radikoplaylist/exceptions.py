@@ -18,3 +18,11 @@ class HttpRequestTimeoutError(HttpRequestError):
 
 class BadHttpStatusCodeError(HttpRequestError):
     """HTTP status code is not 200."""
+
+
+class NoAvailableUrlError(Error):
+    """No available URL."""
+
+
+class FoundFastestHostToDownload(Error):
+    """Found fastest host to download."""

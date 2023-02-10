@@ -87,6 +87,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         "X-Radiko-User": "dummy_user",
     }
     PATTERN_LSID_LIVE_MASTER_PLAYLIST = re.compile(r"^[a-fA-F0-9]{38}$")
+    PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST = re.compile(r"^[a-fA-F0-9]{32}$")
 
     @staticmethod
     def combination(array_a: List[List[A]], array_b: List[List[B]]) -> List[List[Union[A, B]]]:
@@ -106,64 +107,64 @@ class ParameterList:
         return [cls.__dict__[station.replace("-", "_")] for station in InstanceResource.LIST_STATION]
 
 
-class ParameterExpectedPlaylistCreateUrlString(ParameterList):
+class ParameterExpectedLivePlaylistCreateUrlString(ParameterList):
     """To use for parametrized test."""
 
-    BAYFM78 = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    FMJ = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    FMR = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    FMT = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    HOUSOU_DAIGAKU = "https://radiko.jp/v2/api/ts/playlist.m3u8"
-    INT = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    JOAK = "https://radiko.jp/v2/api/ts/playlist.m3u8"
-    JOAK_FM = "https://radiko.jp/v2/api/ts/playlist.m3u8"
-    JORF = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    LFR = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    NACK5 = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    QRR = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    RN1 = "https://radiko.jp/v2/api/ts/playlist.m3u8"
-    RN2 = "https://tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    TBS = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
-    YFM = "https://c-tf-rpaa.smartstream.ne.jp/tf/playlist.m3u8"
+    BAYFM78 = "https://c-radiko.smartstream.ne.jp/BAYFM78/_definst_/simul-stream.stream/playlist.m3u8"
+    FMJ = "https://c-radiko.smartstream.ne.jp/FMJ/_definst_/simul-stream.stream/playlist.m3u8"
+    FMR = "https://c-radiko.smartstream.ne.jp/FMT/_definst_/simul-stream.stream/playlist.m3u8"
+    FMT = "https://c-radiko.smartstream.ne.jp/FMT/_definst_/simul-stream.stream/playlist.m3u8"
+    HOUSOU_DAIGAKU = "https://f-radiko.smartstream.ne.jp/HOUSOU-DAIGAKU/_definst_/simul-stream.stream/playlist.m3u8"
+    INT = "https://c-radiko.smartstream.ne.jp/INT/_definst_/simul-stream.stream/playlist.m3u8"
+    JOAK = "https://c-radiko.smartstream.ne.jp/JOAK/_definst_/simul-stream.stream/playlist.m3u8"
+    JOAK_FM = "https://c-radiko.smartstream.ne.jp/JOAK-FM/_definst_/simul-stream.stream/playlist.m3u8"
+    JORF = "https://c-radiko.smartstream.ne.jp/JORF/_definst_/simul-stream.stream/playlist.m3u8"
+    LFR = "https://c-radiko.smartstream.ne.jp/LFR/_definst_/simul-stream.stream/playlist.m3u8"
+    NACK5 = "https://c-radiko.smartstream.ne.jp/NACK5/_definst_/simul-stream.stream/playlist.m3u8"
+    QRR = "https://c-radiko.smartstream.ne.jp/QRR/_definst_/simul-stream.stream/playlist.m3u8"
+    RN1 = "https://f-radiko.smartstream.ne.jp/RN1/_definst_/simul-stream.stream/playlist.m3u8"
+    RN2 = "https://f-radiko.smartstream.ne.jp/RN2/_definst_/simul-stream.stream/playlist.m3u8"
+    TBS = "https://c-radiko.smartstream.ne.jp/TBS/_definst_/simul-stream.stream/playlist.m3u8"
+    YFM = "https://c-radiko.smartstream.ne.jp/YFM/_definst_/simul-stream.stream/playlist.m3u8"
 
 
-class ParameterExpectedUrl(ParameterList):
+class ParameterExpectedLiveUrl(ParameterList):
     """To use for parametrized test."""
 
     BAYFM78 = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/BAYFM78/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "BAYFM78", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     FMJ = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/FMJ/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "FMJ", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     FMR = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/FMT/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "FMR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     FMT = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/FMT/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "FMT", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     HOUSOU_DAIGAKU = ExpectedUrl(
-        "http",
+        "https",
         "f-radiko.smartstream.ne.jp",
         "/HOUSOU-DAIGAKU/_definst_/simul-stream.stream/playlist.m3u8",
         "",
@@ -177,14 +178,14 @@ class ParameterExpectedUrl(ParameterList):
     )
     INT = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/INT/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "INT", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     JOAK = ExpectedUrl(
-        "http",
+        "https",
         "c-radiko.smartstream.ne.jp",
         "/JOAK/_definst_/simul-stream.stream/playlist.m3u8",
         "",
@@ -192,7 +193,7 @@ class ParameterExpectedUrl(ParameterList):
         {"l": "15", "station_id": "JOAK", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     JOAK_FM = ExpectedUrl(
-        "http",
+        "https",
         "c-radiko.smartstream.ne.jp",
         "/JOAK-FM/_definst_/simul-stream.stream/playlist.m3u8",
         "",
@@ -201,38 +202,38 @@ class ParameterExpectedUrl(ParameterList):
     )
     JORF = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/JORF/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "JORF", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     LFR = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/LFR/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "LFR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     NACK5 = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/NACK5/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "NACK5", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     QRR = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/QRR/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "QRR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     RN1 = ExpectedUrl(
-        "http",
+        "https",
         "f-radiko.smartstream.ne.jp",
         "/RN1/_definst_/simul-stream.stream/playlist.m3u8",
         "",
@@ -241,25 +242,188 @@ class ParameterExpectedUrl(ParameterList):
     )
     RN2 = ExpectedUrl(
         "https",
-        "rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "f-radiko.smartstream.ne.jp",
+        "/RN2/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "RN2", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     TBS = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/TBS/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "TBS", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
     )
     YFM = ExpectedUrl(
         "https",
-        "c-rpaa.smartstream.ne.jp",
-        "/so/playlist.m3u8",
+        "c-radiko.smartstream.ne.jp",
+        "/YFM/_definst_/simul-stream.stream/playlist.m3u8",
         "",
         "",
         {"l": "15", "station_id": "YFM", "type": "b", "lsid": InstanceResource.PATTERN_LSID_LIVE_MASTER_PLAYLIST},
+    )
+
+
+class ParameterExpectedTimeFreeUrl(ParameterList):
+    """To use for parametrized test."""
+
+    BAYFM78 = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "BAYFM78",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    FMJ = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "FMJ", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    FMR = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "FMR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    FMT = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "FMT", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    HOUSOU_DAIGAKU = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "HOUSOU-DAIGAKU",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    INT = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "INT", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    JOAK = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "JOAK",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    JOAK_FM = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "JOAK-FM",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    JORF = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "JORF",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    LFR = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "LFR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    NACK5 = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {
+            "l": "15",
+            "station_id": "NACK5",
+            "type": "b",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    QRR = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "QRR", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    RN1 = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "RN1", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    RN2 = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "RN2", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    TBS = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "TBS", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
+    )
+    YFM = ExpectedUrl(
+        "https",
+        "radiko.jp",
+        "/v2/api/ts/playlist.m3u8",
+        "",
+        "",
+        {"l": "15", "station_id": "YFM", "type": "b", "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST},
     )
