@@ -1,3 +1,75 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="radikoplaylist"
+version="1.0.1"
+description = "Accesses to radiko API, gets media playlist URL and built header for HTTP request to its URL."
+readme = "README.md"
+requires-python = ">=3.5"
+dependencies = [
+  "defusedxml",
+  "m3u8",
+  "requests"
+]
+license = {file = "LICENSE"}
+authors = [
+    {name = "Master"},
+    {email = "roadmasternavi@gmail.com"},
+]
+maintainers = [
+  {name = "Master", email = "roadmasternavi@gmail.com"}
+]
+keywords = ["radikoplaylist"]
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet",
+    "Topic :: Internet :: WWW/HTTP",
+    "Typing :: Typed"
+]
+
+[project.urls]
+homepage = "https://github.com/road-master/radiko-playlist"
+# documentation = "https://readthedocs.org"
+repository = "https://github.com/road-master/radiko-playlist"
+# changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.black]
+line-length = 119
+
+[tool.coverage.run]
+source = ["radikoplaylist"]
+
+[tool.docformatter]
+recursive = true
+wrap-descriptions = 119
+wrap-summaries = 119
+
 [tool.isort]
 # @see https://github.com/timothycrosley/isort/issues/694#issuecomment-581246882
 multi_line_output = 3
@@ -18,33 +90,6 @@ lexicographical = true
 # see: https://pycqa.github.io/isort/docs/configuration/profiles.html
 order_by_type = false
 # @see https://black.readthedocs.io/en/stable/pyproject_toml.html#configuration-format
-[tool.black]
-line-length = 119
-
-[tool.coverage.run]
-source = ["radikoplaylist"]
-
-[tool.docformatter]
-recursive = true
-wrap-descriptions = 119
-wrap-summaries = 119
-
-[tool.pylint.basic]
-docstring-min-length = "7"
-
-[tool.pylint.format]
-max-line-length = 119
-
-[tool.pylint.messages_control]
-# consider-using-f-string: To support Python 3.5
-disable = ''',
-    consider-using-f-string,
-    '''
-
-[tool.pylint.options]
-# Since this rule against single responsibility principle.
-# @see https://stackoverflow.com/questions/28722314/why-does-pylint-want-2-public-methods-per-class/40258006#40258006
-min-public-methods = "1"
 
 [tool.mypy]
 strict = true
@@ -69,6 +114,23 @@ add_select = ["D212", "D214", "D410", "D411", "D415", "D416", "D417"]
 # D105: Docstring may be missed in public nested class since docstring-min-length is set.
 # D107: Docstring may be missed in __init__ method since docstring-min-length is set.
 add_ignore = ["D400", "D401", "D402", "D415", "D101", "D102", "D103", "D105", "D106", "D107"]
+
+[tool.pylint.basic]
+docstring-min-length = "7"
+
+[tool.pylint.format]
+max-line-length = 119
+
+[tool.pylint.messages_control]
+# consider-using-f-string: To support Python 3.5
+disable = ''',
+    consider-using-f-string,
+    '''
+
+[tool.pylint.options]
+# Since this rule against single responsibility principle.
+# @see https://stackoverflow.com/questions/28722314/why-does-pylint-want-2-public-methods-per-class/40258006#40258006
+min-public-methods = "1"
 
 # [tool.pytest.ini_options]
 # log_cli = true
