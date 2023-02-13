@@ -17,7 +17,7 @@ class InstanceResource:
 
     URL_RADIKO_AUTH_1 = "https://radiko.jp/v2/api/auth1"
     URL_RADIKO_AUTH_2 = "https://radiko.jp/v2/api/auth2"
-    URL_RADIKO_STREAM_PC_HTML_5 = "http://radiko.jp/v3/station/stream/pc_html5/"
+    URL_RADIKO_STREAM_PC_HTML_5 = "https://radiko.jp/v3/station/stream/pc_html5/"
     # Reason: This is not hardcoded password
     RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # nosec
     RADIKO_KEY_LENGTH_EXAMPLE = "16"

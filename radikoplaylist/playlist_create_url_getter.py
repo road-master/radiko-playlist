@@ -56,7 +56,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
 
     @classmethod
     def get(cls, station_id: str, headers: Mapping[str, Union[str, bytes]]) -> str:
-        url = "http://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
+        url = "https://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
         response = Requester.get(url, headers)
         return cls.get_playlist_create_url(response.text)
 
