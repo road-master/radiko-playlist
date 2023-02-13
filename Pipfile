@@ -18,7 +18,7 @@ docformatter = {extras = ["tomli"], version = "*"}
 dodgy = "*"
 # Since Pipenv can't lock for too much combinations to attempt lock:
 # pip._vendor.resolvelib.resolvers.ResolutionTooDeep: 2000000
-flake8 = "==4.0.1"
+flake8 = {version = "==4.0.1", markers="python_version >= '3.6'"}
 # To use flake8 --radon-show-closures
 flake8-polyfill = "*"
 # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
