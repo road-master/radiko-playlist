@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/32788a087b5e6264eaae/maintainability)](https://codeclimate.com/github/road-master/radiko-playlist/maintainability)
 [![Updates](https://pyup.io/repos/github/road-master/radiko-playlist/shield.svg)](https://pyup.io/repos/github/road-master/radiko-playlist/)
 [![Python versions](https://img.shields.io/pypi/pyversions/radikoplaylist.svg)](https://pypi.org/project/radikoplaylist)
-[![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Froad-master%2Fradikoplaylist)](http://twitter.com/share?text=radiko%20playlist&url=https://pypi.org/project/radikoplaylist/&hashtags=python)
+[![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Froad-master%2Fradikoplaylist)](https://twitter.com/share?text=radiko%20playlist&url=https://pypi.org/project/radikoplaylist/&hashtags=python)
 
 Accesses to radiko API, gets media playlist URL and built header for HTTP request to its URL.
 
@@ -19,7 +19,7 @@ We can find various useages by integrating with other libraries.
 Following example requires additional installations:
 
 - [ffmpeg]
-- [ffmpeg-python].
+- [ffmpeg-python]
 
 ### Record Live
 
@@ -38,12 +38,12 @@ stream = ffmpeg.input(
     headers=master_playlist.headers,
     copytb='1'
 )
-stream = ffmpeg.output(stream, "./record.aac", f='mp4', c='copy')
+stream = ffmpeg.output(stream, "./record.m4a", f='mp4', c='copy')
 
 # @see https://github.com/kkroening/ffmpeg-python/issues/162#issuecomment-571820244
 popen = stream.run_async(pipe_stdin=True)
-recnording_minute = 30
-time.sleep(minute * 60)
+recording_minute = 30
+time.sleep(recording_minute * 60)
 popen.communicate(str.encode("q"))
 time.sleep(3)
 popen.terminate()
@@ -66,7 +66,7 @@ stream = ffmpeg.input(
     headers=master_playlist.headers,
     copytb='1'
 )
-stream = ffmpeg.output(stream, "./record.aac", f='mp4', c='copy')
+stream = ffmpeg.output(stream, "./record.m4a", f='mp4', c='copy')
 ffmpeg.run(stream)
 ```
 
