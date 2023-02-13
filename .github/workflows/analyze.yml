@@ -12,8 +12,10 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install pipenv
       - run: python -m pipenv install --skip-lock --dev
-      - run: python -m pipenv run inv coverage --xml
-      - uses: paambaati/codeclimate-action@v3
+      # see:
+      # - Unexpected type '' encountered while reading 'action manifest root' · Issue #577 · paambaati/codeclimate-action
+      #   https://github.com/paambaati/codeclimate-action/issues/577#issuecomment-1188527480
+      - uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         with:
