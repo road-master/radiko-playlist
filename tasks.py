@@ -48,7 +48,6 @@ if sys.version_info[:3] >= (3, 6, 0):
             docformatter(context, check),
             isort(context, check),
             autoflake(context, check),
-            pipenv_setup(context, check),
             black(context, check),
         ]:
             if result.failed:
@@ -106,12 +105,6 @@ def isort(context: Context, check: bool = False) -> Result:
     """Runs isort."""
     isort_options = "--recursive {}".format("--check-only --diff" if check else "")
     return cast(Result, context.run("isort {} {}".format(isort_options, " ".join(PYTHON_DIRS)), warn=True))
-
-
-def pipenv_setup(context: Context, check: bool = False) -> Result:
-    """Runs pipenv-setup."""
-    isort_options = "{}".format("check --strict" if check else "sync --pipfile")
-    return cast(Result, context.run("pipenv-setup {}".format(isort_options), warn=True))
 
 
 def black(context: Context, check: bool = False) -> Result:
@@ -243,5 +236,4 @@ if sys.version_info[:3] >= (3, 6, 0):
     @task(clean)
     def dist(context: Context) -> None:
         """Build source and wheel packages."""
-        context.run("python setup.py sdist")
-        context.run("python setup.py bdist_wheel")
+        context.run("python -m build")

@@ -6,7 +6,7 @@ from logging import getLogger
 from random import SystemRandom
 from typing import Mapping, Union
 
-from radikoplaylist.playlist_create_url_getter import PlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter, TimeFreePlaylistCreateUrlGetter
 
 __all__ = ["MasterPlaylistRequest", "LiveMasterPlaylistRequest", "TimeFreeMasterPlaylistRequest"]
 
@@ -21,9 +21,13 @@ class MasterPlaylistRequest(ABC):
 
     def build_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
         """Creates URL of master playlist."""
-        url = PlaylistCreateUrlGetter.get(self.station_id, headers, is_time_free=False) + "?" + self.build_query()
+        url = self.get_playlist_create_url(headers) + "?" + self.build_query()
         self.logger.debug("playlist url:%s", url)
         return url
+
+    @abstractmethod
+    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+        raise NotImplementedError()  # pragma: no cover
 
     @abstractmethod
     def build_query(self) -> str:
@@ -41,6 +45,9 @@ class LiveMasterPlaylistRequest(MasterPlaylistRequest):
     def __init__(self, station_id: str):
         super().__init__(station_id, False)
 
+    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+        return LivePlaylistCreateUrlGetter.get(self.station_id, headers)
+
     def build_query(self) -> str:
         return "station_id=" + self.station_id + "&" "l=15&" "lsid=" + self.generate_uid() + "&" "type=b"
 
@@ -56,6 +63,9 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         super().__init__(station_id, True)
         self.start_at = start_at
         self.end_at = end_at
+
+    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+        return TimeFreePlaylistCreateUrlGetter.get(self.station_id, headers)
 
     def build_query(self) -> str:
         return (

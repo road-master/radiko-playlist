@@ -1,26 +1,145 @@
 """Implements getting process URL to create playlist."""
-from typing import cast, Mapping, Union
+from abc import ABC, abstractmethod
+from typing import cast, Generic, List, Mapping, Tuple, TypeVar, Union
 
 from defusedxml import ElementTree
 
+from radikoplaylist.exceptions import FoundFastestHostToDownload, NoAvailableUrlError
 from radikoplaylist.requester import Requester
 
 
-class PlaylistCreateUrlGetter:
+class UrlChecker(ABC):
+    """To check URL whether FFmpeg supported or not."""
+
+    C_RPAA = "https://c-rpaa.smartstream.ne.jp"
+    SI_C_RADIKO = "https://si-c-radiko.smartstream.ne.jp"
+    SI_F_RADIKO = "https://si-f-radiko.smartstream.ne.jp"
+    RD_WOWZA_RADIKO = "https://rd-wowza-radiko.radiko-cf.com"
+    F_RADIKO = "https://f-radiko.smartstream.ne.jp"
+
+    def __init__(self) -> None:
+        self.tuple_ffmpeg_unsupported = self.get_tuple_ffmpeg_unsupported()
+
+    def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
+        return (self.C_RPAA, self.SI_C_RADIKO, self.SI_F_RADIKO)
+
+    def is_ffmpeg_supported(self, url: str) -> bool:
+        return not url.startswith(self.tuple_ffmpeg_unsupported)
+
+
+class LiveUrlChecker(UrlChecker):
+    # Following URL forcibly connects not Time Free but Live
+    C_RADIKO = "https://c-radiko.smartstream.ne.jp"
+
+
+class TimeFreeUrlChecker(UrlChecker):
+    """To check URL for Time Free whether FFmpeg supported or not."""
+
+    RADIKO_JP = "https://radiko.jp"
+    RPAA = "https://rpaa.smartstream.ne.jp"
+    TF_C_RPAA_RADIKO = "https://tf-c-rpaa-radiko.smartstream.ne.jp"
+    TF_F_RPAA_RADIKO = "https://tf-f-rpaa-radiko.smartstream.ne.jp"
+
+    def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
+        return super().get_tuple_ffmpeg_unsupported() + (self.TF_C_RPAA_RADIKO, self.TF_F_RPAA_RADIKO, self.RPAA)
+
+    @staticmethod
+    def is_fastest_host_to_download(url: str) -> bool:
+        return url.startswith(TimeFreeUrlChecker.RADIKO_JP)
+
+
+TypeVarHost = TypeVar("TypeVarHost", bound=UrlChecker)
+
+
+class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
     """Implements getting process URL to create playlist."""
 
-    @staticmethod
-    def get(station_id: str, headers: Mapping[str, Union[str, bytes]], is_time_free: bool) -> str:
-        url = "http://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
+    @classmethod
+    def get(cls, station_id: str, headers: Mapping[str, Union[str, bytes]]) -> str:
+        url = "https://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
         response = Requester.get(url, headers)
-        return PlaylistCreateUrlGetter.get_playlist_create_url(response.text, is_time_free)
+        return cls.get_playlist_create_url(response.text)
 
-    @staticmethod
-    def get_playlist_create_url(string_xml: str, is_time_free: bool) -> str:
+    @classmethod
+    def get_playlist_create_url(cls, string_xml: str) -> str:
         """Parses XML and extract target URL to create playlist."""
         root = ElementTree.fromstring(string_xml, forbid_dtd=True)
         list_url = root.findall(".//url[@areafree='1']")
-        list_filtered_url = [url for url in list_url if url.attrib["timefree"] == str(int(is_time_free))]
-        url = list_filtered_url[0]
-        element = url.find("./playlist_create_url")
-        return cast(str, element.text)
+        list_playlist_create_url = [
+            cast(str, url.find("./playlist_create_url").text)
+            for url in list_url
+            if url.attrib["timefree"] == cls.time_free()
+        ]
+        return cls.filter_playlist_create_url(list_playlist_create_url)
+
+    @classmethod
+    def filter_playlist_create_url(cls, list_playlist_create_url: List[str]) -> str:
+        """Filters playlist create URL.
+
+        This method is the part divided from get_playlist_create_url() since radon grades unified method as B.
+        """
+        host = cls.create_host()
+        candidacy = []
+        try:
+            candidacy = [
+                playlist_create_url
+                for playlist_create_url in list_playlist_create_url
+                if cls.filter_url(playlist_create_url, host)
+            ]
+        except FoundFastestHostToDownload as error:
+            return str(error)
+        try:
+            return candidacy[0]
+        except IndexError as error:  # pragma: no cover
+            raise NoAvailableUrlError(list_playlist_create_url) from error
+
+    @classmethod
+    @abstractmethod
+    def time_free(cls) -> str:
+        raise NotImplementedError  # pragma: no cover
+
+    @classmethod
+    @abstractmethod
+    def create_host(cls) -> TypeVarHost:
+        raise NotImplementedError  # pragma: no cover
+
+    @classmethod
+    @abstractmethod
+    def filter_url(cls, playlist_create_url: str, host: TypeVarHost) -> bool:
+        raise NotImplementedError  # pragma: no cover
+
+
+class LivePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[LiveUrlChecker]):
+    """Implements getting process Live URL to create playlist."""
+
+    @classmethod
+    @abstractmethod
+    def time_free(cls) -> str:
+        return "0"
+
+    @classmethod
+    def create_host(cls) -> LiveUrlChecker:
+        return LiveUrlChecker()
+
+    @classmethod
+    def filter_url(cls, playlist_create_url: str, host: UrlChecker) -> bool:
+        return host.is_ffmpeg_supported(playlist_create_url)
+
+
+class TimeFreePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[TimeFreeUrlChecker]):
+    """Implements getting process Time Free URL to create playlist."""
+
+    @classmethod
+    @abstractmethod
+    def time_free(cls) -> str:
+        return "1"
+
+    @classmethod
+    def create_host(cls) -> TimeFreeUrlChecker:
+        return TimeFreeUrlChecker()
+
+    @classmethod
+    def filter_url(cls, playlist_create_url: str, host: TimeFreeUrlChecker) -> bool:
+        if host.is_fastest_host_to_download(playlist_create_url):
+            raise FoundFastestHostToDownload(playlist_create_url)
+        return host.is_ffmpeg_supported(playlist_create_url)
