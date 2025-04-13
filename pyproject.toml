@@ -17,7 +17,7 @@ dependencies = [
   # To request to radiko
   "requests"
 ]
-license = {file = "LICENSE"}
+license-files = ["LICENSE"]
 authors = [
     {name = "Master"},
     {email = "roadmasternavi@gmail.com"},
@@ -29,8 +29,6 @@ keywords = ["radikoplaylist"]
 classifiers=[
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Topic :: Software Development",
@@ -63,7 +61,7 @@ dev = [
   "cohesion",
   "coverage >=3.5.4",
   "dlint",
-  "docformatter[tomli]",
+  "docformatter",
   "dodgy",
   "flake8;python_version>='3.6'",
   # To use flake8 --radon-show-closures
