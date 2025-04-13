@@ -82,6 +82,7 @@ dev = [
   # To mock requests to prevent slow test
   "requests-mock",
   "tomli;python_version>='3.6'",
+  "types-defusedxml;python_version>='3.8'",
   "types-invoke",
   "types-requests",
   "xenon"
