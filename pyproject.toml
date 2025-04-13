@@ -9,8 +9,12 @@ description = "Accesses to radiko API, gets media playlist URL and built header 
 readme = "README.md"
 requires-python = ">=3.5"
 dependencies = [
+  # - dlint/DUO107.md at master · dlint-py/dlint
+  #   https://github.com/dlint-py/dlint/blob/master/docs/linters/DUO107.md
   "defusedxml",
+  # To parse m3u8 from radiko
   "m3u8",
+  # To request to radiko
   "requests"
 ]
 license = {file = "LICENSE"}
@@ -45,6 +49,42 @@ classifiers=[
     "Topic :: Internet",
     "Topic :: Internet :: WWW/HTTP",
     "Typing :: Typed"
+]
+
+[dependency-groups]
+dev = [
+  "autoflake",
+  "bandit",
+  "black;python_version>='3.7'",
+  "build",
+  "bump2version",
+  "cohesion",
+  "coverage >=3.5.4",
+  "dlint",
+  "docformatter[tomli]",
+  "dodgy",
+  "flake8;python_version>='3.6'",
+  # To use flake8 --radon-show-closures
+  "flake8-polyfill",
+  # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
+  # When unpin hacking, it has possibility to install too legacy version of hacking.
+  "hacking >=5.0.0;python_version>='3.8'",
+  "invoke",
+  "isort",
+  "mypy",
+  "numpy",
+  "pydocstyle",
+  "pylint",
+  "pytest",
+  "pytest-resource-path",
+  "pyvelocity;python_version>='3.9'",
+  "radon",
+  # To mock requests to prevent slow test
+  "requests-mock",
+  "tomli;python_version>='3.6'",
+  "types-invoke",
+  "types-requests",
+  "xenon"
 ]
 
 [project.urls]

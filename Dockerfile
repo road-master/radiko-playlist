@@ -1,20 +1,17 @@
 # Slim image can't install numpy
-FROM python:3.11.1-slim-bullseye AS production
+FROM python:3.13.3-slim-bookworm AS production
 # setuptools 65.3.0 can't lock package defined its dependencies by pyproject.toml
-RUN pip install --upgrade setuptools>=65.4.0
+RUN pip install --upgrade --no-cache-dir setuptools>=65.4.0 uv===0.6.14
+# && uv pip install --no-managed-python --system --no-dev \
+# && uv cache clean \
+# && rm -r "$(uv python dir)" \
+# && rm -r "$(uv tool dir)" \
+# && rm ~/.local/bin/uv ~/.local/bin/uvx
 WORKDIR /workspace
 COPY . /workspace
-RUN pip --no-cache-dir install pipenv==2022.8.30 \
- && pipenv install --skip-lock \
- && pip uninstall -y pipenv virtualenv-clone virtualenv
 
 FROM production AS development
-# see: https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
-ENV PIPENV_VENV_IN_PROJECT=1
-# see:
-# - Fail to pipenv update due to MetadataGenerationFailed · Issue #5377 · pypa/pipenv
-#   https://github.com/pypa/pipenv/issues/5377
-RUN pip --no-cache-dir install pipenv==2022.8.30 \
- && pipenv install --skip-lock --dev
-ENTRYPOINT [ "pipenv", "run" ]
+RUN pip install --no-cache-dir uv===0.6.14 \
+ && uv sync
+ENTRYPOINT [ "uv", "run" ]
 CMD ["pytest"]
