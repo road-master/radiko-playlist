@@ -7,7 +7,7 @@ name="radikoplaylist"
 version="1.1.0"
 description = "Accesses to radiko API, gets media playlist URL and built header for HTTP request to its URL."
 readme = "README.md"
-requires-python = ">=3.5"
+requires-python = ">=3.7"
 dependencies = [
   # - dlint/DUO107.md at master · dlint-py/dlint
   #   https://github.com/dlint-py/dlint/blob/master/docs/linters/DUO107.md
@@ -17,7 +17,7 @@ dependencies = [
   # To request to radiko
   "requests"
 ]
-license-files = ["LICENSE"]
+license = {file = "LICENSE"}
 authors = [
   {name = "Master", email = "roadmasternavi@gmail.com"},
 ]
@@ -36,8 +36,6 @@ classifiers=[
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.5",
-  "Programming Language :: Python :: 3.6",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -81,7 +79,7 @@ dev = [
   # To mock requests to prevent slow test
   "requests-mock",
   "ruff>=0.0.17",
-  "semgrep;python_version>='3.6'",
+  "semgrep;python_version>='3.9' or python_version>='3.6' and platform_system=='Linux'",
   "tomli;python_version>='3.6'",
   "types-defusedxml;python_version>='3.8'",
   "types-invoke",
@@ -196,12 +194,6 @@ docstring-min-length = "7"
 
 [tool.pylint.format]
 max-line-length = 119
-
-[tool.pylint.messages_control]
-# consider-using-f-string: To support Python 3.5
-disable = ''',
-    consider-using-f-string,
-    '''
 
 [tool.pylint.options]
 # Since this rule against single responsibility principle.

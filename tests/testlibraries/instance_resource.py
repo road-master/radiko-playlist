@@ -2,7 +2,7 @@
 
 from logging import getLogger
 import re
-from typing import Any, cast, ClassVar, List, TypeVar, Union
+from typing import Any, cast, ClassVar, Dict, List, TypeVar, Union
 from unittest.mock import MagicMock
 
 import numpy as np
@@ -24,7 +24,7 @@ class InstanceResource:
     RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # noqa: S105 # nosec: B105
     RADIKO_KEY_LENGTH_EXAMPLE = "16"
     RADIKO_KEY_OFFSET_EXAMPLE = "16"
-    RESPONSE_HEADER_AUTH_1_EXAMPLE: ClassVar[dict[str, str]] = {
+    RESPONSE_HEADER_AUTH_1_EXAMPLE: ClassVar[Dict[str, str]] = {
         "X-Radiko-AUTHTOKEN": RADIKO_AUTH_TOKEN_EXAMPLE,
         "X-Radiko-KeyLength": RADIKO_KEY_LENGTH_EXAMPLE,
         "X-Radiko-KeyOffset": RADIKO_KEY_OFFSET_EXAMPLE,
@@ -45,7 +45,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         name="generate_uid",
         return_value="45f59aed8851994d2d5ecc8e7a946018",
     )
-    LIST_STATUS_CODE_ERROR: ClassVar[list[int]] = [
+    LIST_STATUS_CODE_ERROR: ClassVar[List[int]] = [
         400,
         403,
         404,
@@ -54,7 +54,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         503,
         504,
     ]
-    LIST_STATION: ClassVar[list[str]] = [
+    LIST_STATION: ClassVar[List[str]] = [
         "BAYFM78",
         "FMJ",
         "FMR",
@@ -72,7 +72,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         "TBS",
         "YFM",
     ]
-    HEADERS_EXAMPLE: ClassVar[dict[str, str | bytes]] = {
+    HEADERS_EXAMPLE: ClassVar[Dict[str, Union[str, bytes]]] = {
         "Accept": "*/*",
         "Connection": "keep-alive",
         "User-Agent": "python3.7",

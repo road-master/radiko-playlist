@@ -78,8 +78,8 @@ Ready to contribute? Here's how to set up `radiko playlist` for local developmen
    ```console
    uv run inv style --check
    uv run pytest
-   uv python install 3.5
-   uv venv --python 3.5
+   uv python install 3.7
+   uv venv --python 3.7
    uv run pytest
    ```
 
