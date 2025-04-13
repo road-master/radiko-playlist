@@ -1,7 +1,7 @@
 """Implements model of expected URL."""
 
 from dataclasses import asdict, dataclass
-from typing import Dict, Iterable, Pattern, Union
+from typing import Dict, Iterator, Pattern, Union
 from urllib.parse import parse_qs, ParseResult
 
 
@@ -15,7 +15,7 @@ class ExpectedUrlProperties:
     params: str
     fragment: str
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> Iterator[str]:
         return iter(asdict(self).values())
 
     def assert_parse_result_url(self, parse_result_url: ParseResult) -> None:
@@ -27,9 +27,7 @@ class ExpectedUrlProperties:
             parse_result_url.params,
             parse_result_url.fragment,
         ]
-        # Reason: Mypy's issue:
-        #   No overload variant of "zip" matches argument types "list[str]", "ExpectedUrlProperties"
-        for actual, expected in zip(list_actual, self):  # type: ignore[call-overload]
+        for actual, expected in zip(list_actual, self):
             assert actual == expected, "actual = " + actual + ", expected = " + expected
 
 
@@ -37,7 +35,7 @@ class ExpectedUrl:
     """Model of expected URL."""
 
     # Reason: ParseResult has 5 attributes
-    def __init__(  # noqa: R0917 pylint: disable=too-many-arguments too-many-positional-arguments
+    def __init__(  # pylint: disable=too-many-arguments too-many-positional-arguments
         self,
         expected_url_properties: ExpectedUrlProperties,
         query: Dict[str, Union[str, Pattern[str]]],

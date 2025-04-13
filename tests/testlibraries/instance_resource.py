@@ -1,10 +1,11 @@
 """Implements instance resources."""
 
+from logging import getLogger
 import re
-from typing import Any, cast, List, TypeVar, Union
+from typing import Any, cast, ClassVar, List, TypeVar, Union
 from unittest.mock import MagicMock
 
-import numpy
+import numpy as np
 
 from tests.testlibraries.expected_url import ExpectedUrl, ExpectedUrlProperties
 
@@ -20,35 +21,31 @@ class InstanceResource:
     URL_RADIKO_AUTH_2 = "https://radiko.jp/v2/api/auth2"
     URL_RADIKO_STREAM_PC_HTML_5 = "https://radiko.jp/v3/station/stream/pc_html5/"
     # Reason: This is not hardcoded password
-    RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # nosec
+    RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # noqa: S105 # nosec: B105
     RADIKO_KEY_LENGTH_EXAMPLE = "16"
     RADIKO_KEY_OFFSET_EXAMPLE = "16"
-    RESPONSE_HEADER_AUTH_1_EXAMPLE = {
+    RESPONSE_HEADER_AUTH_1_EXAMPLE: ClassVar[dict[str, str]] = {
         "X-Radiko-AUTHTOKEN": RADIKO_AUTH_TOKEN_EXAMPLE,
         "X-Radiko-KeyLength": RADIKO_KEY_LENGTH_EXAMPLE,
         "X-Radiko-KeyOffset": RADIKO_KEY_OFFSET_EXAMPLE,
     }
-    RESPONSE_CONTENT_AUTH_1_EXAMPLE = (
-        """
+    RESPONSE_CONTENT_AUTH_1_EXAMPLE = b"""
 #EXTM3U
 #EXT-X-VERSION:6
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=52973,CODECS="mp4a.40.5
 https://rpaa.smartstream.ne.jp/medialist?session=Q3fHC9Smzp8x49j9AqicBL
 """
-    ).encode("utf-8")
-    RESPONSE_CONTENT_MASTER_PLAY_LIST = (
-        """
+    RESPONSE_CONTENT_MASTER_PLAY_LIST = b"""
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=52973,CODECS="mp4a.40.5"
 https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
 """
-    ).encode("utf-8")
     MOCK_GENERATE_UID = MagicMock(
         name="generate_uid",
         return_value="45f59aed8851994d2d5ecc8e7a946018",
     )
-    LIST_STATUS_CODE_ERROR = [
+    LIST_STATUS_CODE_ERROR: ClassVar[list[int]] = [
         400,
         403,
         404,
@@ -57,7 +54,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         503,
         504,
     ]
-    LIST_STATION = [
+    LIST_STATION: ClassVar[list[str]] = [
         "BAYFM78",
         "FMJ",
         "FMR",
@@ -75,7 +72,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         "TBS",
         "YFM",
     ]
-    HEADERS_EXAMPLE = {
+    HEADERS_EXAMPLE: ClassVar[dict[str, str | bytes]] = {
         "Accept": "*/*",
         "Connection": "keep-alive",
         "User-Agent": "python3.7",
@@ -92,14 +89,15 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
 
     @staticmethod
     def combination(array_a: List[List[A]], array_b: List[List[B]]) -> List[List[Union[A, B]]]:
-        return [cast(List[Union[A, B]], a + b) for b in array_b for a in array_a]
+        return [cast("List[Union[A, B]]", a + b) for b in array_b for a in array_a]
 
     @staticmethod
     def concat(*args: List[str]) -> List[List[str]]:
-        print(args)
-        transposed_args = [numpy.array([array]).transpose() for array in args]
-        print(transposed_args)
-        return cast(List[List[str]], numpy.concatenate(transposed_args, axis=1).tolist())
+        logger = getLogger(__name__)
+        logger.debug(args)
+        transposed_args = [np.array([array]).transpose() for array in args]
+        logger.debug(transposed_args)
+        return cast("List[List[str]]", np.concatenate(transposed_args, axis=1).tolist())
 
 
 class ParameterList:

@@ -14,7 +14,8 @@ if TYPE_CHECKING:
     from xml.etree.ElementTree import Element  # nosec B405
 
 
-class UrlChecker(ABC):
+# Reason: This class is intentionally designed as a base class for other classes.
+class UrlChecker(ABC):  # noqa: B024
     """To check URL whether FFmpeg supported or not."""
 
     C_RPAA = "https://c-rpaa.smartstream.ne.jp"
@@ -47,11 +48,7 @@ class TimeFreeUrlChecker(UrlChecker):
     TF_F_RPAA_RADIKO = "https://tf-f-rpaa-radiko.smartstream.ne.jp"
 
     def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
-        return super().get_tuple_ffmpeg_unsupported() + (
-            self.TF_C_RPAA_RADIKO,
-            self.TF_F_RPAA_RADIKO,
-            self.RPAA,
-        )
+        return (*super().get_tuple_ffmpeg_unsupported(), self.TF_C_RPAA_RADIKO, self.TF_F_RPAA_RADIKO, self.RPAA)
 
     @staticmethod
     def is_fastest_host_to_download(url: str) -> bool:
@@ -85,9 +82,11 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
         """Strips playlist create URL."""
         element = url.find("./playlist_create_url")
         if element is None:
-            raise ValueError("playlist_create_url element not found")
+            msg = "playlist_create_url element not found"
+            raise ValueError(msg)
         if element.text is None:
-            raise ValueError("playlist_create_url text is None")
+            msg = "playlist_create_url text is None"
+            raise ValueError(msg)
         return element.text
 
     @classmethod
@@ -114,17 +113,17 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
     @classmethod
     @abstractmethod
     def time_free(cls) -> str:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
     def create_host(cls) -> TypeVarHost:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
     def filter_url(cls, playlist_create_url: str, host: TypeVarHost) -> bool:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class LivePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[LiveUrlChecker]):

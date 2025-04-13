@@ -11,6 +11,10 @@ WORKDIR /workspace
 COPY . /workspace
 
 FROM production AS development
+# The uv command also errors out when installing semgrep:
+# - Getting semgrep-core in pipenv · Issue #2929 · semgrep/semgrep
+#   https://github.com/semgrep/semgrep/issues/2929#issuecomment-818994969
+ENV SEMGREP_SKIP_BIN=true
 RUN pip install --no-cache-dir uv===0.6.14 \
  && uv sync
 ENTRYPOINT [ "uv", "run" ]

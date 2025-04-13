@@ -2,7 +2,7 @@
 
 import base64
 from logging import getLogger
-from typing import Dict, Union
+from typing import Dict, MutableMapping, Union
 
 from requests import Response
 
@@ -19,9 +19,9 @@ class Authorization:
     # @see http://radiko.jp/apps/js/playerCommon.js
     _RADIKO_AUTH_KEY = b"bcd151073c03b352e1ef2fd66c32209da9ca0afa"
 
-    def __init__(self, *, area_id: str = ARIA_ID_DEFAULT):
+    def __init__(self, *, area_id: str = ARIA_ID_DEFAULT) -> None:
         """Key X-Radiko-*** in headers is required in specification of radiko API."""
-        self._headers = {
+        self._headers: MutableMapping[str, str | bytes] = {
             "User-Agent": "python3.7",
             "Accept": "*/*",
             "X-Radiko-App": "pc_html5",
@@ -29,7 +29,7 @@ class Authorization:
             "X-Radiko-User": "dummy_user",
             "X-Radiko-Device": "pc",
             "X-Radiko-AuthToken": "",
-            "X-Radiko-Partialkey": "",
+            "X-Radiko-Partialkey": b"",
             "X-Radiko-AreaId": area_id,
         }
         self.logger = getLogger(__name__)
@@ -39,14 +39,16 @@ class Authorization:
         res = Requester.get(Authorization._AUTH1_URL, self._headers)
         self._headers["X-Radiko-AuthToken"] = self._get_auth_token(res)
         # noinspection PyTypeChecker
-        self._headers["X-Radiko-Partialkey"] = self._get_partial_key(res)  # type: ignore
+        self._headers["X-Radiko-Partialkey"] = self._get_partial_key(res)
         res = Requester.get(Authorization._AUTH2_URL, self._headers)
         self.logger.debug("authenticated headers:%s", self._headers)
         self.logger.debug("res.headers:%s", res.headers)
         self.logger.debug("res.content:%s", res.content)
         self._headers["Connection"] = "keep-alive"
         self.logger.debug("headers: %s", self._headers)
-        return self._headers  # type: ignore
+        # Mypy's issue:
+        #   Incompatible return value type (got "dict[str, str]", expected "dict[str, str | bytes]")
+        return self._headers  # type: ignore[return-value]
 
     @staticmethod
     def _get_auth_token(response: Response) -> str:

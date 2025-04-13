@@ -19,36 +19,35 @@ dependencies = [
 ]
 license-files = ["LICENSE"]
 authors = [
-    {name = "Master"},
-    {email = "roadmasternavi@gmail.com"},
+  {name = "Master", email = "roadmasternavi@gmail.com"},
 ]
 maintainers = [
   {name = "Master", email = "roadmasternavi@gmail.com"}
 ]
 keywords = ["radikoplaylist"]
 classifiers=[
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Topic :: Software Development",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Build Tools",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Internet",
-    "Topic :: Internet :: WWW/HTTP",
-    "Typing :: Typed"
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.5",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP",
+  "Typing :: Typed"
 ]
 
 [dependency-groups]
@@ -69,7 +68,7 @@ dev = [
   # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
   # When unpin hacking, it has possibility to install too legacy version of hacking.
   "hacking >=5.0.0;python_version>='3.8'",
-  "invoke",
+  "invokelint;python_version>='3.7'",
   "isort",
   "mypy",
   "numpy",
@@ -81,11 +80,14 @@ dev = [
   "radon",
   # To mock requests to prevent slow test
   "requests-mock",
+  "ruff>=0.0.17",
+  "semgrep;python_version>='3.6'",
   "tomli;python_version>='3.6'",
   "types-defusedxml;python_version>='3.8'",
   "types-invoke",
   "types-requests",
-  "xenon"
+  "types-setuptools>=68.2.0.0",
+  "xenon",
 ]
 
 [project.urls]
@@ -100,16 +102,50 @@ zip-safe = false
 [tool.setuptools.package-data]
 "*" = ["py.typed"]
 
+[tool.bandit.assert_used]
+skips = ["tests/*"]
+
+# @see https://black.readthedocs.io/en/stable/pyproject_toml.html#configuration-format
 [tool.black]
 line-length = 119
 
 [tool.coverage.run]
 source = ["radikoplaylist"]
 
+[tool.coverage.report]
+exclude_also = [
+    # Assume `if TYPE_CHECKING: ... else: ...` block is covered · Issue #831 · nedbat/coveragepy
+    #   https://github.com/nedbat/coveragepy/issues/831#issuecomment-517778185
+    "if TYPE_CHECKING:",
+    # Pylint will detect instead:
+    # - abstract-method / W0223 - Pylint 2.17.0-dev0 documentation
+    #   https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/abstract-method.html
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+
 [tool.docformatter]
 recursive = true
 wrap-descriptions = 119
 wrap-summaries = 119
+
+[tool.flake8]
+# @see https://github.com/psf/black/blob/master/README.md#line-length
+max_line_length = 119
+extend_ignore = [
+  "E203",
+  # Since it conflicts with Black, Black and its philosophy should be respect than hacking.
+  # see: https://github.com/psf/black
+  "H301",
+  # Cohesion may be in experimental.
+  "H601",
+]
+statistics = true
+show_source = true
+exclude = [
+  ".venv",
+  "docs",
+]
 
 [tool.isort]
 # @see https://github.com/timothycrosley/isort/issues/694#issuecomment-581246882
@@ -130,13 +166,12 @@ lexicographical = true
 # Google supports, Black doesn't have any opinions
 # see: https://pycqa.github.io/isort/docs/configuration/profiles.html
 order_by_type = false
-# @see https://black.readthedocs.io/en/stable/pyproject_toml.html#configuration-format
 
 [tool.mypy]
 strict = true
 
 [[tool.mypy.overrides]]
-module = "defusedxml.*"
+module = "m3u8"
 ignore_missing_imports = true
 
 [tool.pydocstyle]
@@ -173,7 +208,78 @@ disable = ''',
 # @see https://stackoverflow.com/questions/28722314/why-does-pylint-want-2-public-methods-per-class/40258006#40258006
 min-public-methods = "1"
 
-# [tool.pytest.ini_options]
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 # log_cli = true
 # log_cli_level = "DEBUG"
 # log_format = "%(asctime)s %(process)d %(levelname)s %(name)s:%(filename)s:%(lineno)d %(message)s"
+
+[tool.ruff]
+line-length = 119
+target-version = "py37"
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # pycodestyle
+    "W",  # pycodestyle
+    "C90",  # mccabe
+    # "I",  # isort
+    "N",  # pep8-naming
+    # "D",  # pydocstyle
+    "UP",  # pyupgrade
+    "YTT",  # flake8-2020
+    "ANN",  # flake8-annotations
+    "S",  # flake8-bandit
+    "BLE",  # flake8-blind-except
+    "FBT",  # flake8-boolean-trap
+    "B",  # flake8-bugbear
+    "A",  # flake8-builtins
+    "COM",  # flake8-commas
+    "C4",  # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "T10",  # flake8-debugger
+    "DJ",  # flake8-django
+    "EM",  # flake8-errmsg
+    "EXE",  # flake8-executable
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "G",  # flake8-logging-format
+    "INP",  # flake8-no-pep420
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "PYI",  # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",  # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
+    "PD",  # pandas-vet
+    "PGH",  # pygrep-hooks
+    "PL",  # Pylint
+    "TRY",  # tryceratops
+    "NPY",  # NumPy-specific rules
+    "RUF",  # Ruff-specific rules
+]
+ignore = [
+    "UP032",  # [*] Use f-string instead of `format` call
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed, These warnings are disabled by default
+]
+fixable = [
+    "COM812",  # Trailing comma missing
+    "PT001",  # Use `@pytest.fixture()` over `@pytest.fixture`
+    "PT006",  # Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
+    "SIM108",  # Use ternary operator `extra_context = {} if extra_context is None else request.param` instead of `if`-`else`-block
+    "UP015",  # Unnecessary open mode parameters
+    "UP037",  # Remove quotes from type annotation
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
