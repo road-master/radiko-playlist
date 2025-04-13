@@ -11,8 +11,8 @@ Accesses to radiko API, gets media playlist URL and built header for HTTP reques
 
 ## Features
 
-This is light weight library for interacting with radiko API to get informations to access to media playlist.
-We can find various useages by integrating with other libraries.
+This is light weight library for interacting with radiko API to get information to access to media playlist.
+We can find various usages by integrating with other libraries.
 
 ## Example
 
