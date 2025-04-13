@@ -19,4 +19,4 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         with:
-          coverageCommand: uv run invoke coverage --xml
+          coverageCommand: uv run invoke test.cov --xml
