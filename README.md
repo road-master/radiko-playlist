@@ -3,7 +3,7 @@
 [![Test](https://github.com/road-master/radiko-playlist/workflows/Test/badge.svg)](https://github.com/road-master/radiko-playlist/actions?query=workflow%3ATest)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/32788a087b5e6264eaae/test_coverage)](https://codeclimate.com/github/road-master/radiko-playlist/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/32788a087b5e6264eaae/maintainability)](https://codeclimate.com/github/road-master/radiko-playlist/maintainability)
-[![Updates](https://pyup.io/repos/github/road-master/radiko-playlist/shield.svg)](https://pyup.io/repos/github/road-master/radiko-playlist/)
+[![Dependabot](https://flat.badgen.net/github/dependabot/road-master/radiko-playlist?icon=dependabot)](https://github.com/road-master/radiko-playlist/security/dependabot)
 [![Python versions](https://img.shields.io/pypi/pyversions/radikoplaylist.svg)](https://pypi.org/project/radikoplaylist)
 [![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Froad-master%2Fradikoplaylist)](https://twitter.com/share?text=radiko%20playlist&url=https://pypi.org/project/radikoplaylist/&hashtags=python)
 
