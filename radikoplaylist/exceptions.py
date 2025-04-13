@@ -24,5 +24,6 @@ class NoAvailableUrlError(Error):
     """No available URL."""
 
 
-class FoundFastestHostToDownload(Error):
+# Reason: This is not error like StopIteration
+class FoundFastestHostToDownload(Error):  # noqa: N818
     """Found fastest host to download."""

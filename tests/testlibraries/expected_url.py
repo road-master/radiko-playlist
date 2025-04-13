@@ -1,29 +1,24 @@
 """Implements model of expected URL."""
-from typing import Dict, Pattern, Union
+
+from dataclasses import asdict, dataclass
+from typing import Dict, Iterator, Pattern, Union
 from urllib.parse import parse_qs, ParseResult
 
 
-class ExpectedUrl:
-    """Model of expected URL."""
+@dataclass
+class ExpectedUrlProperties:
+    """Model of expected URL properties."""
 
-    # pylint: disable=too-many-arguments
-    def __init__(
-        self,
-        scheme: str,
-        netloc: str,
-        path: str,
-        params: str,
-        fragment: str,
-        query: Dict[str, Union[str, Pattern[str]]],
-    ) -> None:
-        self.scheme = scheme
-        self.netloc = netloc
-        self.path = path
-        self.params = params
-        self.fragment = fragment
-        self.query = query
+    scheme: str
+    netloc: str
+    path: str
+    params: str
+    fragment: str
 
-    def check(self, parse_result_url: ParseResult) -> None:
+    def __iter__(self) -> Iterator[str]:
+        return iter(asdict(self).values())
+
+    def assert_parse_result_url(self, parse_result_url: ParseResult) -> None:
         """Checks."""
         list_actual = [
             parse_result_url.scheme,
@@ -32,15 +27,25 @@ class ExpectedUrl:
             parse_result_url.params,
             parse_result_url.fragment,
         ]
-        list_expected = [
-            self.scheme,
-            self.netloc,
-            self.path,
-            self.params,
-            self.fragment,
-        ]
-        for actual, expected in zip(list_actual, list_expected):
+        for actual, expected in zip(list_actual, self):
             assert actual == expected, "actual = " + actual + ", expected = " + expected
+
+
+class ExpectedUrl:
+    """Model of expected URL."""
+
+    # Reason: ParseResult has 5 attributes
+    def __init__(  # pylint: disable=too-many-arguments too-many-positional-arguments
+        self,
+        expected_url_properties: ExpectedUrlProperties,
+        query: Dict[str, Union[str, Pattern[str]]],
+    ) -> None:
+        self.expected_url_properties = expected_url_properties
+        self.query = query
+
+    def check(self, parse_result_url: ParseResult) -> None:
+        """Checks."""
+        self.expected_url_properties.assert_parse_result_url(parse_result_url)
         self.check_url_query(parse_result_url.query)
 
     def check_url_query(self, query: str) -> None:

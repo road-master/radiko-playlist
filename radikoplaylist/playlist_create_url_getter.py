@@ -1,14 +1,21 @@
 """Implements getting process URL to create playlist."""
+
 from abc import ABC, abstractmethod
-from typing import cast, Generic, List, Mapping, Tuple, TypeVar, Union
+from typing import Generic, List, Mapping, Tuple, TYPE_CHECKING, TypeVar, Union
 
 from defusedxml import ElementTree
 
 from radikoplaylist.exceptions import FoundFastestHostToDownload, NoAvailableUrlError
 from radikoplaylist.requester import Requester
 
+if TYPE_CHECKING:
+    # - defusedxml lacks an Element class · Issue #48 · tiran/defusedxml
+    #   https://github.com/tiran/defusedxml/issues/48#issuecomment-1511284750
+    from xml.etree.ElementTree import Element  # nosec B405
 
-class UrlChecker(ABC):
+
+# Reason: This class is intentionally designed as a base class for other classes.
+class UrlChecker(ABC):  # noqa: B024
     """To check URL whether FFmpeg supported or not."""
 
     C_RPAA = "https://c-rpaa.smartstream.ne.jp"
@@ -41,7 +48,7 @@ class TimeFreeUrlChecker(UrlChecker):
     TF_F_RPAA_RADIKO = "https://tf-f-rpaa-radiko.smartstream.ne.jp"
 
     def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
-        return super().get_tuple_ffmpeg_unsupported() + (self.TF_C_RPAA_RADIKO, self.TF_F_RPAA_RADIKO, self.RPAA)
+        return (*super().get_tuple_ffmpeg_unsupported(), self.TF_C_RPAA_RADIKO, self.TF_F_RPAA_RADIKO, self.RPAA)
 
     @staticmethod
     def is_fastest_host_to_download(url: str) -> bool:
@@ -66,11 +73,21 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
         root = ElementTree.fromstring(string_xml, forbid_dtd=True)
         list_url = root.findall(".//url[@areafree='1']")
         list_playlist_create_url = [
-            cast(str, url.find("./playlist_create_url").text)
-            for url in list_url
-            if url.attrib["timefree"] == cls.time_free()
+            cls.strip_playlist_create_url(url) for url in list_url if url.attrib["timefree"] == cls.time_free()
         ]
         return cls.filter_playlist_create_url(list_playlist_create_url)
+
+    @classmethod
+    def strip_playlist_create_url(cls, url: "Element") -> str:
+        """Strips playlist create URL."""
+        element = url.find("./playlist_create_url")
+        if element is None:
+            msg = "playlist_create_url element not found"
+            raise ValueError(msg)
+        if element.text is None:
+            msg = "playlist_create_url text is None"
+            raise ValueError(msg)
+        return element.text
 
     @classmethod
     def filter_playlist_create_url(cls, list_playlist_create_url: List[str]) -> str:
@@ -96,17 +113,17 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
     @classmethod
     @abstractmethod
     def time_free(cls) -> str:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
     def create_host(cls) -> TypeVarHost:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
     def filter_url(cls, playlist_create_url: str, host: TypeVarHost) -> bool:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class LivePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[LiveUrlChecker]):
