@@ -1,4 +1,5 @@
 """Implements get process fot master playlist."""
+
 from logging import getLogger
 from typing import cast, Mapping, Union
 

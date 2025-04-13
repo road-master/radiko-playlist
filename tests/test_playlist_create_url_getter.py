@@ -1,4 +1,5 @@
 """Tests for radikoplaylist.playlist_create_url_getter."""
+
 import pytest
 
 from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter, TimeFreePlaylistCreateUrlGetter

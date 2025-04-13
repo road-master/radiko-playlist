@@ -1,4 +1,5 @@
 """Test for radikoplaylist.authorization."""
+
 import pytest
 
 from radikoplaylist.authorization import Authorization

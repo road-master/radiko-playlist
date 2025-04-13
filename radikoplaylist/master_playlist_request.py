@@ -1,4 +1,5 @@
 """Implements request model to build URL to request master playlist."""
+
 from abc import ABC, abstractmethod
 import datetime
 import hashlib

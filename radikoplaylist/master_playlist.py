@@ -1,4 +1,5 @@
 """Model of master playlist."""
+
 from typing import Mapping, Union
 
 

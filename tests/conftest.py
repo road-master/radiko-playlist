@@ -1,4 +1,5 @@
 """Config of pytest."""
+
 from pathlib import Path
 from typing import cast, Generator, TYPE_CHECKING
 

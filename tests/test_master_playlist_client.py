@@ -1,4 +1,5 @@
 """Test for radikoplaylist.master_playlist_client."""
+
 from typing import Any, List, Tuple
 
 import pytest

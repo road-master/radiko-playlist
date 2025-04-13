@@ -1,4 +1,5 @@
 """Tests for radikoplaylist.master_playlist_request."""
+
 import re
 from urllib.parse import urlparse
 

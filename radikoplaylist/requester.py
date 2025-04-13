@@ -1,4 +1,5 @@
 """To unify error check and logging process."""
+
 from logging import getLogger
 from typing import Mapping, Union
 

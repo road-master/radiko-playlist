@@ -1,4 +1,5 @@
 """Implements authorization for radiko API."""
+
 import base64
 from logging import getLogger
 from typing import Dict, Union
@@ -57,7 +58,8 @@ class Authorization:
 
         Algorithm is based on function createPartialkey() in following URL.
 
-        @see http://radiko.jp/apps/js/radikoJSPlayer.js
+        @see
+        http://radiko.jp/apps/js/radikoJSPlayer.js
         """
         length = int(response.headers["X-Radiko-KeyLength"])
         offset = int(response.headers["X-Radiko-KeyOffset"])
