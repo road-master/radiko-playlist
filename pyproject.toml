@@ -139,9 +139,6 @@ exclude_also = [
     "raise NotImplementedError",
 ]
 
-[tool.coverage.run]
-source = ["radikoplaylist"]
-
 [tool.docformatter]
 recursive = true
 # For compatibility with Black
