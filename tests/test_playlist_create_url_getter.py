@@ -2,11 +2,13 @@
 
 from typing import TYPE_CHECKING
 
-from defusedxml import ElementTree
 import pytest
+from defusedxml import ElementTree
 
-from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter, TimeFreePlaylistCreateUrlGetter
-from tests.testlibraries.instance_resource import InstanceResource, ParameterExpectedLivePlaylistCreateUrlString
+from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
+from tests.testlibraries.instance_resource import InstanceResource
+from tests.testlibraries.instance_resource import ParameterExpectedLivePlaylistCreateUrlString
 
 if TYPE_CHECKING:
     # - defusedxml lacks an Element class · Issue #48 · tiran/defusedxml

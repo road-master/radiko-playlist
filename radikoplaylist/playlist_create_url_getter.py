@@ -1,11 +1,18 @@
 """Implements getting process URL to create playlist."""
 
-from abc import ABC, abstractmethod
-from typing import Generic, List, Mapping, Tuple, TYPE_CHECKING, TypeVar, Union
+from __future__ import annotations
+
+from abc import ABC
+from abc import abstractmethod
+from typing import TYPE_CHECKING
+from typing import Generic
+from typing import Mapping
+from typing import TypeVar
 
 from defusedxml import ElementTree
 
-from radikoplaylist.exceptions import FoundFastestHostToDownload, NoAvailableUrlError
+from radikoplaylist.exceptions import FoundFastestHostToDownload
+from radikoplaylist.exceptions import NoAvailableUrlError
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
@@ -27,7 +34,7 @@ class UrlChecker(ABC):  # noqa: B024
     def __init__(self) -> None:
         self.tuple_ffmpeg_unsupported = self.get_tuple_ffmpeg_unsupported()
 
-    def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
+    def get_tuple_ffmpeg_unsupported(self) -> tuple[str, ...]:
         return (self.C_RPAA, self.SI_C_RADIKO, self.SI_F_RADIKO)
 
     def is_ffmpeg_supported(self, url: str) -> bool:
@@ -47,7 +54,7 @@ class TimeFreeUrlChecker(UrlChecker):
     TF_C_RPAA_RADIKO = "https://tf-c-rpaa-radiko.smartstream.ne.jp"
     TF_F_RPAA_RADIKO = "https://tf-f-rpaa-radiko.smartstream.ne.jp"
 
-    def get_tuple_ffmpeg_unsupported(self) -> Tuple[str, ...]:
+    def get_tuple_ffmpeg_unsupported(self) -> tuple[str, ...]:
         return (*super().get_tuple_ffmpeg_unsupported(), self.TF_C_RPAA_RADIKO, self.TF_F_RPAA_RADIKO, self.RPAA)
 
     @staticmethod
@@ -62,7 +69,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
     """Implements getting process URL to create playlist."""
 
     @classmethod
-    def get(cls, station_id: str, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def get(cls, station_id: str, headers: Mapping[str, str | bytes]) -> str:
         url = "https://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
         response = Requester.get(url, headers)
         return cls.get_playlist_create_url(response.text)
@@ -78,7 +85,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
         return cls.filter_playlist_create_url(list_playlist_create_url)
 
     @classmethod
-    def strip_playlist_create_url(cls, url: "Element") -> str:
+    def strip_playlist_create_url(cls, url: Element) -> str:
         """Strips playlist create URL."""
         element = url.find("./playlist_create_url")
         if element is None:
@@ -90,7 +97,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
         return element.text
 
     @classmethod
-    def filter_playlist_create_url(cls, list_playlist_create_url: List[str]) -> str:
+    def filter_playlist_create_url(cls, list_playlist_create_url: list[str]) -> str:
         """Filters playlist create URL.
 
         This method is the part divided from get_playlist_create_url() since radon grades unified method as B.

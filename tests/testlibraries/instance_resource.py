@@ -1,13 +1,19 @@
 """Implements instance resources."""
 
-from logging import getLogger
+from __future__ import annotations
+
 import re
-from typing import Any, cast, ClassVar, Dict, List, TypeVar, Union
+from logging import getLogger
+from typing import Any
+from typing import ClassVar
+from typing import TypeVar
+from typing import cast
 from unittest.mock import MagicMock
 
 import numpy as np
 
-from tests.testlibraries.expected_url import ExpectedUrl, ExpectedUrlProperties
+from tests.testlibraries.expected_url import ExpectedUrl
+from tests.testlibraries.expected_url import ExpectedUrlProperties
 
 A = TypeVar("A")
 B = TypeVar("B")
@@ -24,7 +30,7 @@ class InstanceResource:
     RADIKO_AUTH_TOKEN_EXAMPLE = "HrUNR0zyrGseqvlPl1-khQ"  # noqa: S105 # nosec: B105
     RADIKO_KEY_LENGTH_EXAMPLE = "16"
     RADIKO_KEY_OFFSET_EXAMPLE = "16"
-    RESPONSE_HEADER_AUTH_1_EXAMPLE: ClassVar[Dict[str, str]] = {
+    RESPONSE_HEADER_AUTH_1_EXAMPLE: ClassVar[dict[str, str]] = {
         "X-Radiko-AUTHTOKEN": RADIKO_AUTH_TOKEN_EXAMPLE,
         "X-Radiko-KeyLength": RADIKO_KEY_LENGTH_EXAMPLE,
         "X-Radiko-KeyOffset": RADIKO_KEY_OFFSET_EXAMPLE,
@@ -45,7 +51,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         name="generate_uid",
         return_value="45f59aed8851994d2d5ecc8e7a946018",
     )
-    LIST_STATUS_CODE_ERROR: ClassVar[List[int]] = [
+    LIST_STATUS_CODE_ERROR: ClassVar[list[int]] = [
         400,
         403,
         404,
@@ -54,7 +60,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         503,
         504,
     ]
-    LIST_STATION: ClassVar[List[str]] = [
+    LIST_STATION: ClassVar[list[str]] = [
         "BAYFM78",
         "FMJ",
         "FMR",
@@ -72,7 +78,7 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
         "TBS",
         "YFM",
     ]
-    HEADERS_EXAMPLE: ClassVar[Dict[str, Union[str, bytes]]] = {
+    HEADERS_EXAMPLE: ClassVar[dict[str, str | bytes]] = {
         "Accept": "*/*",
         "Connection": "keep-alive",
         "User-Agent": "python3.7",
@@ -88,21 +94,21 @@ https://radiko.jp/v2/api/ts/chunklist/Tt6TRp6b.m3u8
     PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST = re.compile(r"^[a-fA-F0-9]{32}$")
 
     @staticmethod
-    def combination(array_a: List[List[A]], array_b: List[List[B]]) -> List[List[Union[A, B]]]:
-        return [cast("List[Union[A, B]]", a + b) for b in array_b for a in array_a]
+    def combination(array_a: list[list[A]], array_b: list[list[B]]) -> list[list[A | B]]:
+        return [a + b for b in array_b for a in array_a]
 
     @staticmethod
-    def concat(*args: List[str]) -> List[List[str]]:
+    def concat(*args: list[str]) -> list[list[str]]:
         logger = getLogger(__name__)
         logger.debug(args)
         transposed_args = [np.array([array]).transpose() for array in args]
         logger.debug(transposed_args)
-        return cast("List[List[str]]", np.concatenate(transposed_args, axis=1).tolist())
+        return cast("list[list[str]]", np.concatenate(transposed_args, axis=1).tolist())
 
 
 class ParameterList:
     @classmethod
-    def to_list(cls) -> List[Any]:
+    def to_list(cls) -> list[Any]:
         return [cls.__dict__[station.replace("-", "_")] for station in InstanceResource.LIST_STATION]
 
 

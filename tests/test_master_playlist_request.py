@@ -5,13 +5,12 @@ from urllib.parse import urlparse
 
 import pytest
 
-from radikoplaylist.master_playlist_request import LiveMasterPlaylistRequest, TimeFreeMasterPlaylistRequest
+from radikoplaylist.master_playlist_request import LiveMasterPlaylistRequest
+from radikoplaylist.master_playlist_request import TimeFreeMasterPlaylistRequest
 from tests.testlibraries.expected_url import ExpectedUrl
-from tests.testlibraries.instance_resource import (
-    InstanceResource,
-    ParameterExpectedLiveUrl,
-    ParameterExpectedTimeFreeUrl,
-)
+from tests.testlibraries.instance_resource import InstanceResource
+from tests.testlibraries.instance_resource import ParameterExpectedLiveUrl
+from tests.testlibraries.instance_resource import ParameterExpectedTimeFreeUrl
 
 
 class TestMasterPlaylistRequest:

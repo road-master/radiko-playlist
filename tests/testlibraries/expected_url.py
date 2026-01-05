@@ -1,8 +1,13 @@
 """Implements model of expected URL."""
 
-from dataclasses import asdict, dataclass
-from typing import Dict, Iterator, Pattern, Union
-from urllib.parse import parse_qs, ParseResult
+from __future__ import annotations
+
+from dataclasses import asdict
+from dataclasses import dataclass
+from typing import Iterator
+from typing import Pattern
+from urllib.parse import ParseResult
+from urllib.parse import parse_qs
 
 
 @dataclass
@@ -38,7 +43,7 @@ class ExpectedUrl:
     def __init__(  # pylint: disable=too-many-arguments too-many-positional-arguments
         self,
         expected_url_properties: ExpectedUrlProperties,
-        query: Dict[str, Union[str, Pattern[str]]],
+        query: dict[str, str | Pattern[str]],
     ) -> None:
         self.expected_url_properties = expected_url_properties
         self.query = query
