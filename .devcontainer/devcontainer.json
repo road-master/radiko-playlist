@@ -68,6 +68,7 @@
 			},
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
+				"Anthropic.claude-code",
 				"GitHub.copilot",
 				"streetsidesoftware.code-spell-checker",
 				"tamasfe.even-better-toml",
