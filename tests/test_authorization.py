@@ -3,7 +3,8 @@
 import pytest
 
 from radikoplaylist.authorization import Authorization
-from radikoplaylist.exceptions import BadHttpStatusCodeError, HttpRequestTimeoutError
+from radikoplaylist.exceptions import BadHttpStatusCodeError
+from radikoplaylist.exceptions import HttpRequestTimeoutError
 
 
 class TestAuthorization:

@@ -1,14 +1,20 @@
 """Implements get process fot master playlist."""
 
+from __future__ import annotations
+
 from logging import getLogger
-from typing import cast, Mapping, Union
+from typing import TYPE_CHECKING
+from typing import Mapping
+from typing import cast
 
 import m3u8
 
 from radikoplaylist.authorization import Authorization
 from radikoplaylist.master_playlist import MasterPlaylist
-from radikoplaylist.master_playlist_request import MasterPlaylistRequest
 from radikoplaylist.requester import Requester
+
+if TYPE_CHECKING:
+    from radikoplaylist.master_playlist_request import MasterPlaylistRequest
 
 __all__ = ["MasterPlaylistClient"]
 
@@ -29,7 +35,7 @@ class MasterPlaylistClient:
         return MasterPlaylist(url_master_playlist, headers)
 
     @classmethod
-    def _get_url(cls, master_playlist_request: MasterPlaylistRequest, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def _get_url(cls, master_playlist_request: MasterPlaylistRequest, headers: Mapping[str, str | bytes]) -> str:
         """Gets URL of master playlist."""
         logger = getLogger(__name__)
         response = Requester.get(master_playlist_request.build_url(headers), headers)

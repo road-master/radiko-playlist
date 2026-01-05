@@ -1,13 +1,19 @@
 """Test for radikoplaylist.master_playlist_client."""
 
-from typing import Any, List, Tuple
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+from typing import Any
 
 import pytest
-from requests_mock import Mocker
 
+from radikoplaylist import MasterPlaylistClient
+from radikoplaylist import TimeFreeMasterPlaylistRequest
 from radikoplaylist.exceptions import BadHttpStatusCodeError
-from radikoplaylist import MasterPlaylistClient, TimeFreeMasterPlaylistRequest
 from tests.testlibraries.instance_resource import InstanceResource
+
+if TYPE_CHECKING:
+    from requests_mock import Mocker
 
 
 class TestConcat:
@@ -23,7 +29,7 @@ class TestConcat:
             ((["a", "b", "c"], ["A", "B", "C"], ["1", "2", "3"]), [["a", "A", "1"], ["b", "B", "2"], ["c", "C", "3"]]),
         ],
     )
-    def test(parameter: Tuple[List[Any]], expected: List[Any]) -> None:
+    def test(parameter: tuple[list[Any]], expected: list[Any]) -> None:
         """Method concat() should transpose array."""
         actual = InstanceResource.concat(*parameter)
         assert expected == actual

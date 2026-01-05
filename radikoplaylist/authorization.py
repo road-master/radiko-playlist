@@ -1,12 +1,16 @@
 """Implements authorization for radiko API."""
 
+from __future__ import annotations
+
 import base64
 from logging import getLogger
-from typing import Dict, MutableMapping, Union
-
-from requests import Response
+from typing import TYPE_CHECKING
+from typing import MutableMapping
 
 from radikoplaylist.requester import Requester
+
+if TYPE_CHECKING:
+    from requests import Response
 
 
 class Authorization:
@@ -34,7 +38,7 @@ class Authorization:
         }
         self.logger = getLogger(__name__)
 
-    def auth(self) -> Dict[str, Union[str, bytes]]:
+    def auth(self) -> dict[str, str | bytes]:
         """Authorizes radiko API and returns authorized HTTP headers."""
         res = Requester.get(Authorization._AUTH1_URL, self._headers)
         self._headers["X-Radiko-AuthToken"] = self._get_auth_token(res)

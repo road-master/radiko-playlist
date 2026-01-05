@@ -1,13 +1,17 @@
 """Implements request model to build URL to request master playlist."""
 
-from abc import ABC, abstractmethod
+from __future__ import annotations
+
 import datetime
 import hashlib
+from abc import ABC
+from abc import abstractmethod
 from logging import getLogger
 from random import SystemRandom
-from typing import Mapping, Union
+from typing import Mapping
 
-from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter, TimeFreePlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
 
 __all__ = ["LiveMasterPlaylistRequest", "MasterPlaylistRequest", "TimeFreeMasterPlaylistRequest"]
 
@@ -21,14 +25,14 @@ class MasterPlaylistRequest(ABC):
         self.is_time_free = is_time_free
         self.logger = getLogger(__name__)
 
-    def build_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def build_url(self, headers: Mapping[str, str | bytes]) -> str:
         """Creates URL of master playlist."""
         url = self.get_playlist_create_url(headers) + "?" + self.build_query()
         self.logger.debug("playlist url:%s", url)
         return url
 
     @abstractmethod
-    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def get_playlist_create_url(self, headers: Mapping[str, str | bytes]) -> str:
         raise NotImplementedError
 
     @abstractmethod
@@ -47,7 +51,7 @@ class LiveMasterPlaylistRequest(MasterPlaylistRequest):
     def __init__(self, station_id: str) -> None:
         super().__init__(station_id, is_time_free=False)
 
-    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def get_playlist_create_url(self, headers: Mapping[str, str | bytes]) -> str:
         return LivePlaylistCreateUrlGetter.get(self.station_id, headers)
 
     def build_query(self) -> str:
@@ -68,7 +72,7 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         self.start_at = start_at
         self.end_at = end_at
 
-    def get_playlist_create_url(self, headers: Mapping[str, Union[str, bytes]]) -> str:
+    def get_playlist_create_url(self, headers: Mapping[str, str | bytes]) -> str:
         return TimeFreePlaylistCreateUrlGetter.get(self.station_id, headers)
 
     def build_query(self) -> str:
@@ -91,4 +95,4 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         micro_second = datetime.timedelta.total_seconds(now - start) * 1000
         # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
         #   DUO130: Flake8 is using this.
-        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100  # nosec
+        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec

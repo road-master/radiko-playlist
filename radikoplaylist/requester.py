@@ -1,12 +1,16 @@
 """To unify error check and logging process."""
 
+from __future__ import annotations
+
 from logging import getLogger
-from typing import Mapping, Union
+from typing import Mapping
 
 import requests
-from requests import Response, Timeout
+from requests import Response
+from requests import Timeout
 
-from radikoplaylist.exceptions import BadHttpStatusCodeError, HttpRequestTimeoutError
+from radikoplaylist.exceptions import BadHttpStatusCodeError
+from radikoplaylist.exceptions import HttpRequestTimeoutError
 
 
 class Requester:
@@ -15,7 +19,7 @@ class Requester:
     HTTP_STATUS_CODE_OK = 200
 
     @staticmethod
-    def get(url: str, headers: Mapping[str, Union[str, bytes]]) -> Response:
+    def get(url: str, headers: Mapping[str, str | bytes]) -> Response:
         """Get request with error check and logging process."""
         logger = getLogger(__name__)
         try:
