@@ -1,11 +1,12 @@
 # radiko playlist
 
 [![Test](https://github.com/road-master/radiko-playlist/workflows/Test/badge.svg)](https://github.com/road-master/radiko-playlist/actions?query=workflow%3ATest)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/32788a087b5e6264eaae/test_coverage)](https://codeclimate.com/github/road-master/radiko-playlist/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/32788a087b5e6264eaae/maintainability)](https://codeclimate.com/github/road-master/radiko-playlist/maintainability)
+[![CodeQL](https://github.com/road-master/radiko-playlist/workflows/CodeQL/badge.svg)](https://github.com/road-master/radiko-playlist/actions?query=workflow%3ACodeQL)
+[![Code Coverage](https://qlty.sh/gh/road-master/projects/radiko-playlist/coverage.svg)](https://qlty.sh/gh/road-master/projects/radiko-playlist)
+[![Maintainability](https://qlty.sh/gh/road-master/projects/radiko-playlist/maintainability.svg)](https://qlty.sh/gh/road-master/projects/radiko-playlist)
 [![Dependabot](https://flat.badgen.net/github/dependabot/road-master/radiko-playlist?icon=dependabot)](https://github.com/road-master/radiko-playlist/security/dependabot)
 [![Python versions](https://img.shields.io/pypi/pyversions/radikoplaylist.svg)](https://pypi.org/project/radikoplaylist)
-[![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Froad-master%2Fradikoplaylist)](https://twitter.com/share?text=radiko%20playlist&url=https://pypi.org/project/radikoplaylist/&hashtags=python)
+[![X URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Froad-master%2Fradikoplaylist)](https://x.com/intent/post?text=radiko%20playlist&url=https%3A%2F%2Fpypi.org%2Fproject%2Fradikoplaylist%2F&hashtags=python)
 
 Accesses to radiko API, gets media playlist URL and built header for HTTP request to its URL.
 
