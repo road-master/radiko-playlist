@@ -50,7 +50,7 @@ time.sleep(3)
 popen.terminate()
 ```
 
-### Record Time Free
+### Record Time Free (7-Day)
 
 ```python
 import ffmpeg
@@ -71,5 +71,34 @@ stream = ffmpeg.output(stream, "./record.m4a", f='mp4', c='copy')
 ffmpeg.run(stream)
 ```
 
+### Record Time Free (30-Day)
+
+For accessing programs within the past 30 days, you need a radiko premium account.
+First, log in to [radiko.jp] in your browser, then get the `radiko_session` cookie value from your browser's developer tools.
+
+```python
+import ffmpeg
+
+from radikoplaylist import MasterPlaylistClient, TimeFree30DayMasterPlaylistRequest
+
+master_playlist_request = TimeFree30DayMasterPlaylistRequest(
+    "802", 20251214220000, 20251214223000
+)
+master_playlist = MasterPlaylistClient.get(
+    master_playlist_request,
+    area_id="JP13",
+    radiko_session="your_radiko_session_value_from_cookie_here"
+)
+
+stream = ffmpeg.input(
+    master_playlist.media_playlist_url,
+    headers=master_playlist.headers,
+    copytb='1'
+)
+stream = ffmpeg.output(stream, "./record.m4a", f='mp4', c='copy')
+ffmpeg.run(stream)
+```
+
 [ffmpeg]: https://trac.ffmpeg.org/wiki/CompilationGuide
 [ffmpeg-python]: https://pypi.org/project/ffmpeg-python/
+[radiko.jp]: https://radiko.jp/

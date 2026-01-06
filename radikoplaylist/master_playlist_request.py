@@ -11,9 +11,15 @@ from random import SystemRandom
 from typing import Mapping
 
 from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import TimeFree30DayPlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
 
-__all__ = ["LiveMasterPlaylistRequest", "MasterPlaylistRequest", "TimeFreeMasterPlaylistRequest"]
+__all__ = [
+    "LiveMasterPlaylistRequest",
+    "MasterPlaylistRequest",
+    "TimeFree30DayMasterPlaylistRequest",
+    "TimeFreeMasterPlaylistRequest",
+]
 
 
 class MasterPlaylistRequest(ABC):
@@ -92,6 +98,46 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         rnd = SystemRandom().random() * 1000000000
         now = datetime.datetime.now(tz=TimeFreeMasterPlaylistRequest.JST)
         start = datetime.datetime(1970, 1, 1, tzinfo=TimeFreeMasterPlaylistRequest.JST)
+        micro_second = datetime.timedelta.total_seconds(now - start) * 1000
+        # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
+        #   DUO130: Flake8 is using this.
+        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec
+
+
+class TimeFree30DayMasterPlaylistRequest(MasterPlaylistRequest):
+    """MasterPlayListRequest for 30-day time free.
+
+    This request type enables access to programs within the past 30 days (compared to the standard 7-day window). Uses
+    type=c parameter instead of type=b to signal 30-day timefree access to the radiko API.
+    """
+
+    JST = datetime.timezone(datetime.timedelta(hours=9), "JST")
+
+    def __init__(self, station_id: str, start_at: int, end_at: int) -> None:
+        super().__init__(station_id, is_time_free=True)
+        self.start_at = start_at
+        self.end_at = end_at
+
+    def get_playlist_create_url(self, headers: Mapping[str, str | bytes]) -> str:
+        return TimeFree30DayPlaylistCreateUrlGetter.get(self.station_id, headers)
+
+    def build_query(self) -> str:
+        return (
+            "station_id=" + self.station_id + "&"
+            "start_at=" + str(self.start_at) + "&"
+            "ft=" + str(self.start_at) + "&"
+            "end_at=" + str(self.end_at) + "&"
+            "to=" + str(self.end_at) + "&"
+            "l=15&"
+            "lsid=" + self.generate_uid() + "&"
+            "type=c"
+        )
+
+    @staticmethod
+    def generate_uid() -> str:
+        rnd = SystemRandom().random() * 1000000000
+        now = datetime.datetime.now(tz=TimeFree30DayMasterPlaylistRequest.JST)
+        start = datetime.datetime(1970, 1, 1, tzinfo=TimeFree30DayMasterPlaylistRequest.JST)
         micro_second = datetime.timedelta.total_seconds(now - start) * 1000
         # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
         #   DUO130: Flake8 is using this.

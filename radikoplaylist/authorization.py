@@ -23,8 +23,14 @@ class Authorization:
     # @see http://radiko.jp/apps/js/playerCommon.js
     _RADIKO_AUTH_KEY = b"bcd151073c03b352e1ef2fd66c32209da9ca0afa"
 
-    def __init__(self, *, area_id: str = ARIA_ID_DEFAULT) -> None:
-        """Key X-Radiko-*** in headers is required in specification of radiko API."""
+    def __init__(self, *, area_id: str = ARIA_ID_DEFAULT, radiko_session: str | None = None) -> None:
+        """Key X-Radiko-*** in headers is required in specification of radiko API.
+
+        Args:
+            area_id: Area ID for radiko (default: JP13 for Tokyo)
+            radiko_session: Optional radiko premium session cookie for 30-day timefree access.
+                If provided, uses cookie-based authentication instead of auth1/auth2 flow.
+        """
         self._headers: MutableMapping[str, str | bytes] = {
             "User-Agent": "python3.7",
             "Accept": "*/*",
@@ -36,10 +42,21 @@ class Authorization:
             "X-Radiko-Partialkey": b"",
             "X-Radiko-AreaId": area_id,
         }
+        self._radiko_session = radiko_session
         self.logger = getLogger(__name__)
 
     def auth(self) -> dict[str, str | bytes]:
-        """Authorizes radiko API and returns authorized HTTP headers."""
+        """Authorizes radiko API and returns authorized HTTP headers.
+
+        If radiko_session is provided, adds premium account cookie to the headers in addition to performing the
+        standard auth1/auth2 flow.
+        """
+        # Add premium session cookie if provided (for 30-day timefree access)
+        if self._radiko_session:
+            self._headers["Cookie"] = f"radiko_session={self._radiko_session}"
+            self.logger.debug("Added radiko_session cookie for premium account")
+
+        # Perform standard auth1/auth2 flow (required for both free and premium)
         res = Requester.get(Authorization._AUTH1_URL, self._headers)
         self._headers["X-Radiko-AuthToken"] = self._get_auth_token(res)
         # noinspection PyTypeChecker

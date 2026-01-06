@@ -28,9 +28,17 @@ class MasterPlaylistClient:
         master_playlist_request: MasterPlaylistRequest,
         *,
         area_id: str = Authorization.ARIA_ID_DEFAULT,
+        radiko_session: str | None = None,
     ) -> MasterPlaylist:
-        """Gets master playlist."""
-        headers = Authorization(area_id=area_id).auth()
+        """Gets master playlist.
+
+        Args:
+            master_playlist_request: Request object (Live, TimeFree, or TimeFree30Day)
+            area_id: Area ID for radiko (default: JP13 for Tokyo)
+            radiko_session: Optional radiko premium session cookie for 30-day timefree access.
+                Required for TimeFree30DayMasterPlaylistRequest to access premium content.
+        """
+        headers = Authorization(area_id=area_id, radiko_session=radiko_session).auth()
         url_master_playlist = cls._get_url(master_playlist_request, headers)
         return MasterPlaylist(url_master_playlist, headers)
 

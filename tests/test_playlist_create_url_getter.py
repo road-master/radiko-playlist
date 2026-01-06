@@ -6,6 +6,7 @@ import pytest
 from defusedxml import ElementTree
 
 from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter
+from radikoplaylist.playlist_create_url_getter import TimeFree30DayPlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
 from tests.testlibraries.instance_resource import InstanceResource
 from tests.testlibraries.instance_resource import ParameterExpectedLivePlaylistCreateUrlString
@@ -41,6 +42,17 @@ class TestPlaylistCreateUrlGetter:
     def test_time_free(xml_playlist_create_url: str) -> None:
         """Method get_playlist_create_url should return appropriate URL."""
         url = TimeFreePlaylistCreateUrlGetter.get_playlist_create_url(xml_playlist_create_url)
+        assert url == "https://radiko.jp/v2/api/ts/playlist.m3u8"
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "xml_playlist_create_url",
+        InstanceResource.LIST_STATION,
+        indirect=["xml_playlist_create_url"],
+    )
+    def test_time_free_30day(xml_playlist_create_url: str) -> None:
+        """Method get_playlist_create_url should return appropriate URL for 30-day timefree."""
+        url = TimeFree30DayPlaylistCreateUrlGetter.get_playlist_create_url(xml_playlist_create_url)
         assert url == "https://radiko.jp/v2/api/ts/playlist.m3u8"
 
     def test_strip_playlist_create_url(self) -> None:
