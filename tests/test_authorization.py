@@ -23,3 +23,13 @@ class TestAuthorization:
         authorization = Authorization()
         with pytest.raises(BadHttpStatusCodeError):
             authorization.auth()
+
+    @staticmethod
+    @pytest.mark.usefixtures("mock_auth_1", "mock_auth_2")
+    def test_with_radiko_session() -> None:
+        """Test that radiko_session cookie is added to headers."""
+        radiko_session = "test_session_value_123"
+        authorization = Authorization(radiko_session=radiko_session)
+        headers = authorization.auth()
+        assert "Cookie" in headers
+        assert headers["Cookie"] == f"radiko_session={radiko_session}"

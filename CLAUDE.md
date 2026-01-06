@@ -89,7 +89,8 @@ The library follows a multi-step authentication and URL retrieval flow:
      - Time-free mode (`timefree` attribute: "0" for live, "1" for time-free)
      - FFmpeg compatibility (excludes certain CDN hosts that FFmpeg can't handle)
    - For time-free: prioritizes `radiko.jp` hosts (fastest) via exception-based control flow
-   - Two implementations: `LivePlaylistCreateUrlGetter` and `TimeFreePlaylistCreateUrlGetter`
+   - Three implementations: `LivePlaylistCreateUrlGetter`, `TimeFreePlaylistCreateUrlGetter`, and `TimeFree30DayPlaylistCreateUrlGetter`
+   - Note: Both 7-day and 30-day timefree use the same XML filtering (`timefree='1'`); the distinction is in the query parameter (`type=b` vs `type=c`)
 
 3. **Master Playlist Retrieval** ([master_playlist_client.py](radikoplaylist/master_playlist_client.py))
    - Builds request URL using `MasterPlaylistRequest` subclasses
@@ -98,24 +99,63 @@ The library follows a multi-step authentication and URL retrieval flow:
 
 ### Request Models
 
-Two request types inherit from `MasterPlaylistRequest` ([master_playlist_request.py](radikoplaylist/master_playlist_request.py)):
+Three request types inherit from `MasterPlaylistRequest` ([master_playlist_request.py](radikoplaylist/master_playlist_request.py)):
 
 - **LiveMasterPlaylistRequest**: For live radio streams
   - Query params: `station_id`, `l=15`, `lsid` (fixed UID), `type=b`
 
-- **TimeFreeMasterPlaylistRequest**: For recorded content
+- **TimeFreeMasterPlaylistRequest**: For recorded content (7-day window)
   - Requires `start_at` and `end_at` timestamps (format: `YYYYMMDDHHmmss` as integer)
   - Generates MD5-based UID from random value + JST timestamp
   - Query params include: `station_id`, `start_at`, `ft`, `end_at`, `to`, `l=15`, `lsid`, `type=b`
+  - Available for programs within the past 7 days
+
+- **TimeFree30DayMasterPlaylistRequest**: For recorded content (30-day window)
+  - Same signature as `TimeFreeMasterPlaylistRequest` (`station_id`, `start_at`, `end_at`)
+  - Uses `type=c` instead of `type=b` to signal 30-day access
+  - Available for programs within the past 30 days (may require premium radiko account)
+  - Uses same XML endpoints and URL filtering as 7-day variant
+  - The distinction between 7-day and 30-day is made solely via the `type` query parameter
 
 ### Public API
 
 The main entry point is `MasterPlaylistClient.get()` which:
-- Takes a `MasterPlaylistRequest` (Live or TimeFree variant)
+- Takes a `MasterPlaylistRequest` (Live, TimeFree, or TimeFree30Day variant)
 - Optionally takes `area_id` (defaults to "JP13" for Tokyo)
+- Optionally takes `radiko_session` (required for 30-day timefree with premium accounts)
 - Returns a `MasterPlaylist` object with:
   - `media_playlist_url`: The HLS playlist URL to pass to FFmpeg
   - `headers`: The authenticated headers dictionary
+
+#### Premium Account Authentication (30-Day Timefree)
+
+For 30-day timefree access, you need a radiko premium account session cookie:
+
+1. Log in to radiko.jp in your browser with your premium account
+2. Get the `radiko_session` cookie value from your browser's developer tools
+3. Pass it to `MasterPlaylistClient.get()`:
+
+```python
+from radikoplaylist.master_playlist_request import TimeFree30DayMasterPlaylistRequest
+from radikoplaylist.master_playlist_client import MasterPlaylistClient
+
+request = TimeFree30DayMasterPlaylistRequest(
+    station_id="JOAK",
+    start_at=20200518215700,
+    end_at=20200518220000
+)
+
+# Pass your radiko premium session cookie
+playlist = MasterPlaylistClient.get(
+    request,
+    area_id="JP13",
+    radiko_session="your_radiko_session_cookie_value_here"
+)
+```
+
+Without the `radiko_session` parameter, the library uses the standard free account authentication which only supports 7-day timefree access.
+
+**Note:** The library performs the standard auth1/auth2 flow regardless of whether a cookie is provided. The `radiko_session` cookie is added to the headers in addition to the standard authentication tokens, which enables access to premium features like 30-day timefree.
 
 ### URL Filtering Logic
 

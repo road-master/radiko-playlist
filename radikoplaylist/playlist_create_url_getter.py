@@ -167,3 +167,27 @@ class TimeFreePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[TimeFreeUrlChecker
         if host.is_fastest_host_to_download(playlist_create_url):
             raise FoundFastestHostToDownload(playlist_create_url)
         return host.is_ffmpeg_supported(playlist_create_url)
+
+
+class TimeFree30DayPlaylistCreateUrlGetter(PlaylistCreateUrlGetter[TimeFreeUrlChecker]):
+    """Implements getting process Time Free 30-day URL to create playlist.
+
+    This URL getter supports radiko's 30-day timefree feature (extended from the standard 7-day window). Uses the same
+    XML filtering as TimeFreePlaylistCreateUrlGetter since the API XML response does not distinguish between 7-day and
+    30-day content. The distinction is made at the query parameter level (type=c vs type=b).
+    """
+
+    @classmethod
+    @abstractmethod
+    def time_free(cls) -> str:
+        return "1"
+
+    @classmethod
+    def create_host(cls) -> TimeFreeUrlChecker:
+        return TimeFreeUrlChecker()
+
+    @classmethod
+    def filter_url(cls, playlist_create_url: str, host: TimeFreeUrlChecker) -> bool:
+        if host.is_fastest_host_to_download(playlist_create_url):
+            raise FoundFastestHostToDownload(playlist_create_url)
+        return host.is_ffmpeg_supported(playlist_create_url)

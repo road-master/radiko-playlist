@@ -621,3 +621,248 @@ class ParameterExpectedTimeFreeUrl(ParameterList):
             "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
         },
     )
+
+
+class ParameterExpectedTimeFree30DayUrl(ParameterList):
+    """To use for parametrized test for 30-day timefree."""
+
+    BAYFM78 = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "BAYFM78",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    FMJ = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "FMJ",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    FMR = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "FMR",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    FMT = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "FMT",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    HOUSOU_DAIGAKU = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "HOUSOU-DAIGAKU",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    INT = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "INT",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    JOAK = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "JOAK",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    JOAK_FM = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "JOAK-FM",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    JORF = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "JORF",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    LFR = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "LFR",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    NACK5 = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "NACK5",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    QRR = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "QRR",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    RN1 = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "RN1",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    RN2 = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "RN2",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    TBS = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "TBS",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
+    YFM = ExpectedUrl(
+        ExpectedUrlProperties(
+            "https",
+            "radiko.jp",
+            "/v2/api/ts/playlist.m3u8",
+            "",
+            "",
+        ),
+        {
+            "l": "15",
+            "station_id": "YFM",
+            "type": "c",
+            "lsid": InstanceResource.PATTERN_LSID_TIME_FREE_MASTER_PLAYLIST,
+        },
+    )
