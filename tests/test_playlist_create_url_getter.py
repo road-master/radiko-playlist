@@ -76,8 +76,7 @@ class TestPlaylistCreateUrlGetter:
             <data>
                 <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>"
             </data>
-            """
-               ,
+            """,
             forbid_dtd=True,
         )
         url = LivePlaylistCreateUrlGetter.strip_playlist_create_url(element_url)

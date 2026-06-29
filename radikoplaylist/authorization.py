@@ -5,11 +5,12 @@ from __future__ import annotations
 import base64
 from logging import getLogger
 from typing import TYPE_CHECKING
-from typing import MutableMapping
 
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
+    from collections.abc import MutableMapping
+
     from requests import Response
 
 

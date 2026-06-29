@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from logging import getLogger
 from typing import TYPE_CHECKING
-from typing import Mapping
 from typing import cast
 
 import m3u8
@@ -14,6 +13,8 @@ from radikoplaylist.master_playlist import MasterPlaylist
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from radikoplaylist.master_playlist_request import MasterPlaylistRequest
 
 __all__ = ["MasterPlaylistClient"]

@@ -6,7 +6,6 @@ from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
 from typing import Generic
-from typing import Mapping
 from typing import TypeVar
 
 from defusedxml import ElementTree
@@ -16,6 +15,8 @@ from radikoplaylist.exceptions import NoAvailableUrlError
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     # - defusedxml lacks an Element class · Issue #48 · tiran/defusedxml
     #   https://github.com/tiran/defusedxml/issues/48#issuecomment-1511284750
     from xml.etree.ElementTree import Element  # nosec B405

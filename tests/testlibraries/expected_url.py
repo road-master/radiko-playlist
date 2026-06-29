@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from dataclasses import dataclass
-from typing import Iterator
-from typing import Pattern
+from typing import TYPE_CHECKING
 from urllib.parse import ParseResult
 from urllib.parse import parse_qs
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from re import Pattern
 
 
 @dataclass

@@ -43,6 +43,7 @@ classifiers=[
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Internet",
   "Topic :: Internet :: WWW/HTTP",
   "Typing :: Typed"
@@ -57,6 +58,31 @@ dev = [
   "pyvelocity;python_version>='3.9'",
   # To mock requests to prevent slow test
   "requests-mock",
+  # To prevent following error when uv lock:
+  #   × Failed to build `semgrep==0.86.3`
+  # ├─▶ The build backend returned an error
+  # ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+  #     [stderr]
+  #     Traceback (most recent call last):
+  #       File "<string>", line 14, in <module>
+  #         requires = get_requires_for_build({})
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+  #         return self._get_build_requires(config_settings, requirements=[])
+  #                ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+  #         self.run_setup()
+  #         ~~~~~~~~~~~~~~^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 520, in run_setup
+  #         super().run_setup(setup_script=setup_script)
+  #         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 317, in run_setup
+  #         exec(code, locals())
+  #         ~~~~^^^^^^^^^^^^^^^^
+  #       File "<string>", line 94, in <module>
+  #       File "<string>", line 72, in find_executable
+  #     Exception: Could not find 'semgrep-core' executable, tried 'SEMGREP_CORE_BIN' and system 'semgrep-core'
+  "semgrep>=0.87.0",
   "types-defusedxml;python_version>='3.8'",
   "types-requests",
   "types-setuptools>=68.2.0.0",

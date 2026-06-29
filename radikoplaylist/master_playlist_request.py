@@ -8,11 +8,14 @@ from abc import ABC
 from abc import abstractmethod
 from logging import getLogger
 from random import SystemRandom
-from typing import Mapping
+from typing import TYPE_CHECKING
 
 from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFree30DayPlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 __all__ = [
     "LiveMasterPlaylistRequest",
