@@ -32,7 +32,6 @@ class MasterPlaylistRequest(ABC):
         self.logger = getLogger(__name__)
 
     def build_url(self, headers: Mapping[str, str | bytes]) -> str:
-        """Creates URL of master playlist."""
         url = self.get_playlist_create_url(headers) + "?" + self.build_query()
         self.logger.debug("playlist url:%s", url)
         return url

@@ -30,7 +30,7 @@ class MasterPlaylistClient:
         area_id: str = Authorization.ARIA_ID_DEFAULT,
         radiko_session: str | None = None,
     ) -> MasterPlaylist:
-        """Gets master playlist.
+        """Get master playlist.
 
         Args:
             master_playlist_request: Request object (Live, TimeFree, or TimeFree30Day)
@@ -44,7 +44,6 @@ class MasterPlaylistClient:
 
     @classmethod
     def _get_url(cls, master_playlist_request: MasterPlaylistRequest, headers: Mapping[str, str | bytes]) -> str:
-        """Gets URL of master playlist."""
         logger = getLogger(__name__)
         response = Requester.get(master_playlist_request.build_url(headers), headers)
         master_playlist_url = m3u8.loads(response.content.decode("utf-8")).playlists[0].uri

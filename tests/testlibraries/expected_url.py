@@ -24,7 +24,7 @@ class ExpectedUrlProperties:
         return iter(asdict(self).values())
 
     def assert_parse_result_url(self, parse_result_url: ParseResult) -> None:
-        """Checks."""
+        """Check."""
         list_actual = [
             parse_result_url.scheme,
             parse_result_url.netloc,
@@ -49,12 +49,11 @@ class ExpectedUrl:
         self.query = query
 
     def check(self, parse_result_url: ParseResult) -> None:
-        """Checks."""
         self.expected_url_properties.assert_parse_result_url(parse_result_url)
         self.check_url_query(parse_result_url.query)
 
     def check_url_query(self, query: str) -> None:
-        """Checks URL query."""
+        """Check URL query."""
         parsed_result_query = parse_qs(query)
         for key, expected in self.query.items():
             actual = parsed_result_query[key][0]

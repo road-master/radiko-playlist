@@ -1,5 +1,6 @@
 """Tests for radikoplaylist.playlist_create_url_getter."""
 
+from textwrap import dedent
 from typing import TYPE_CHECKING
 
 import pytest
@@ -15,6 +16,19 @@ if TYPE_CHECKING:
     # - defusedxml lacks an Element class · Issue #48 · tiran/defusedxml
     #   https://github.com/tiran/defusedxml/issues/48#issuecomment-1511284750
     from xml.etree.ElementTree import Element  # nosec B405
+
+
+HTML_PLAYLIST_CREATE_URL_ELEMENT_NOT_FOUND = dedent("""\
+    <?xml version="1.0"?>
+    <data>
+    </data>
+""")
+HTML_PLAYLIST_CREATE_URL_ELEMENT_TEXT_IS_NONE = dedent("""\
+    <?xml version="1.0"?>
+    <data>
+        <playlist_create_url></playlist_create_url>
+    </data>
+""")
 
 
 class TestPlaylistCreateUrlGetter:
@@ -62,7 +76,8 @@ class TestPlaylistCreateUrlGetter:
             <data>
                 <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>"
             </data>
-            """,
+            """
+               ,
             forbid_dtd=True,
         )
         url = LivePlaylistCreateUrlGetter.strip_playlist_create_url(element_url)
@@ -72,24 +87,11 @@ class TestPlaylistCreateUrlGetter:
         ("element_url", "error_message"),
         [
             (
-                ElementTree.fromstring(
-                    """<?xml version="1.0"?>
-                    <data>
-                    </data>
-                    """,
-                    forbid_dtd=True,
-                ),
+                ElementTree.fromstring(HTML_PLAYLIST_CREATE_URL_ELEMENT_NOT_FOUND, forbid_dtd=True),
                 "playlist_create_url element not found",
             ),
             (
-                ElementTree.fromstring(
-                    """<?xml version="1.0"?>
-                    <data>
-                        <playlist_create_url></playlist_create_url>"
-                    </data>
-                    """,
-                    forbid_dtd=True,
-                ),
+                ElementTree.fromstring(HTML_PLAYLIST_CREATE_URL_ELEMENT_TEXT_IS_NONE, forbid_dtd=True),
                 "playlist_create_url text is None",
             ),
         ],
