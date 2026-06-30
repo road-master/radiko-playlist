@@ -82,8 +82,14 @@ dev = [
   #       File "<string>", line 94, in <module>
   #       File "<string>", line 72, in find_executable
   #     Exception: Could not find 'semgrep-core' executable, tried 'SEMGREP_CORE_BIN' and system 'semgrep-core'
-  "semgrep>=0.87.0",
-  "types-defusedxml;python_version>='3.8'",
+  # If we simply lock as "semgrep; python_version >= '3.9' or python_version>='3.6' and platform_system=='Linux'",
+  # the semgrep 1.121.0 is installed in Python 3.14 and cause following error:
+  #     File "/root/.local/share/uv/python/cpython-3.14.5-linux-aarch64-gnu/lib/python3.14/importlib/__init__.py", line 88, in import_module
+  #       return _bootstrap._gcd_import(name[level:], package, level)
+  #              ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #   TypeError: Metaclasses with custom tp_new are not supported.
+  "semgrep>=0.87.0; python_version >= '3.9' and python_version < '3.10' or python_version>='3.6' and platform_system=='Linux'",
+  "semgrep>=1.122.0; python_version >= '3.10'",  "types-defusedxml;python_version>='3.8'",
   "types-requests",
   "types-setuptools>=68.2.0.0",
 ]
