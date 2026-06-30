@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from logging import getLogger
 from typing import TYPE_CHECKING
-from typing import Mapping
 from typing import cast
 
 import m3u8
@@ -14,6 +13,8 @@ from radikoplaylist.master_playlist import MasterPlaylist
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from radikoplaylist.master_playlist_request import MasterPlaylistRequest
 
 __all__ = ["MasterPlaylistClient"]
@@ -30,7 +31,7 @@ class MasterPlaylistClient:
         area_id: str = Authorization.ARIA_ID_DEFAULT,
         radiko_session: str | None = None,
     ) -> MasterPlaylist:
-        """Gets master playlist.
+        """Get master playlist.
 
         Args:
             master_playlist_request: Request object (Live, TimeFree, or TimeFree30Day)
@@ -44,7 +45,6 @@ class MasterPlaylistClient:
 
     @classmethod
     def _get_url(cls, master_playlist_request: MasterPlaylistRequest, headers: Mapping[str, str | bytes]) -> str:
-        """Gets URL of master playlist."""
         logger = getLogger(__name__)
         response = Requester.get(master_playlist_request.build_url(headers), headers)
         master_playlist_url = m3u8.loads(response.content.decode("utf-8")).playlists[0].uri

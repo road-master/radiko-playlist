@@ -43,6 +43,7 @@ classifiers=[
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Internet",
   "Topic :: Internet :: WWW/HTTP",
   "Typing :: Typed"
@@ -50,57 +51,47 @@ classifiers=[
 
 [dependency-groups]
 dev = [
-  "bandit",
-  "build",
   "bump-my-version",
-  "cohesion",
-  # The coverage==3.5.3 is difficult to analyze its dependencies by dependencies management tool,
-  # so we should avoid 3.5.3 or lower.
-  # - Command: "pipenv install --skip-lock" fails 
-  #   since it tries to parse legacy package metadata and raise InstallError
-  #   · Issue #5595 · pypa/pipenv
-  #   https://github.com/pypa/pipenv/issues/5595
-  "coverage>=3.5.4",
-  # The dlint less than 0.14.0 limits max version of flake8.
-  # - dlint/requirements.txt at 0.13.0 · dlint-py/dlint
-  #   https://github.com/dlint-py/dlint/blob/0.13.0/requirements.txt#L1
-  "dlint>=0.14.0",
-  # To the docformatter load pyproject.toml settings:
-  "docformatter[tomli]; python_version < '3.11'",
-  "docformatter; python_version >= '3.11'",
-  "dodgy",
-  # The hacking depends flake8 ~=6.1.0 or ~=5.0.1 or ~=4.0.1.
-  # We should avoid the versions that is not compatible with the hacking,
-  # considering the speed of dependency calculation process
-  "flake8!=6.0.0,!=5.0.0,>=4.0.1",
-  # To replace E501 in pycodestyle with B950 in flake8-bugbear:
-  # - Using Black with other tools - Black 25.1.0 documentation
-  #   https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#bugbear
-  "flake8-bugbear",
-  # To use flake8 --radon-show-closures
-  "flake8-polyfill",
-  # To use pyproject.toml for Flake8 configuration
-  "Flake8-pyproject",
-  # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
-  # When unpin hacking, it has possibility to install too legacy version of hacking.
-  "hacking >=5.0.0;python_version>='3.8'",
-  "invokelint>=0.8.1",
-  "mypy",
+  "invokelint[basic]>=0.19.0",
   "numpy",
-  "pylint",
-  "pytest",
   "pytest-resource-path",
   "pyvelocity;python_version>='3.9'",
-  "radon",
   # To mock requests to prevent slow test
   "requests-mock",
-  "ruff>=0.0.17",
-  "semgrep;python_version>='3.9' or platform_system=='Linux'",
-  "types-defusedxml;python_version>='3.8'",
-  "types-invoke",
+  # To prevent following error when uv lock:
+  #   × Failed to build `semgrep==0.86.3`
+  # ├─▶ The build backend returned an error
+  # ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+  #     [stderr]
+  #     Traceback (most recent call last):
+  #       File "<string>", line 14, in <module>
+  #         requires = get_requires_for_build({})
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+  #         return self._get_build_requires(config_settings, requirements=[])
+  #                ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+  #         self.run_setup()
+  #         ~~~~~~~~~~~~~~^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 520, in run_setup
+  #         super().run_setup(setup_script=setup_script)
+  #         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #       File "/root/.cache/uv/builds-v0/.tmpYdUb3N/lib/python3.14/site-packages/setuptools/build_meta.py", line 317, in run_setup
+  #         exec(code, locals())
+  #         ~~~~^^^^^^^^^^^^^^^^
+  #       File "<string>", line 94, in <module>
+  #       File "<string>", line 72, in find_executable
+  #     Exception: Could not find 'semgrep-core' executable, tried 'SEMGREP_CORE_BIN' and system 'semgrep-core'
+  # If we simply lock as "semgrep; python_version >= '3.9' or python_version>='3.6' and platform_system=='Linux'",
+  # the semgrep 1.121.0 is installed in Python 3.14 and cause following error:
+  #     File "/root/.local/share/uv/python/cpython-3.14.5-linux-aarch64-gnu/lib/python3.14/importlib/__init__.py", line 88, in import_module
+  #       return _bootstrap._gcd_import(name[level:], package, level)
+  #              ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #   TypeError: Metaclasses with custom tp_new are not supported.
+  "semgrep>=0.87.0; python_version >= '3.9' and python_version < '3.10' or python_version>='3.6' and platform_system=='Linux'",
+  "semgrep>=1.122.0; python_version >= '3.10'",  "types-defusedxml;python_version>='3.8'",
   "types-requests",
   "types-setuptools>=68.2.0.0",
-  "xenon",
 ]
 
 [project.urls]
@@ -129,14 +120,14 @@ replace = '__version__ = "{new_version}"'
 
 [tool.coverage.report]
 exclude_also = [
-    # Assume `if TYPE_CHECKING: ... else: ...` block is covered · Issue #831 · nedbat/coveragepy
-    #   https://github.com/nedbat/coveragepy/issues/831#issuecomment-517778185
-    "if TYPE_CHECKING:",
-    # Pylint will detect instead:
-    # - abstract-method / W0223 - Pylint 2.17.0-dev0 documentation
-    #   https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/abstract-method.html
-    "raise AssertionError",
-    "raise NotImplementedError",
+  # Assume `if TYPE_CHECKING: ... else: ...` block is covered · Issue #831 · nedbat/coveragepy
+  #   https://github.com/nedbat/coveragepy/issues/831#issuecomment-517778185
+  "if TYPE_CHECKING:",
+  # Pylint will detect instead:
+  # - abstract-method / W0223 - Pylint 2.17.0-dev0 documentation
+  #   https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/abstract-method.html
+  "raise AssertionError",
+  "raise NotImplementedError",
 ]
 
 [tool.docformatter]
@@ -177,6 +168,12 @@ strict = true
 module = "m3u8"
 ignore_missing_imports = true
 
+[tool.pylint]
+disable = [
+  # We check line length by flake8-bugbear B950.
+  "line-too-long",
+]
+
 [tool.pylint.basic]
 docstring-min-length = "7"
 
@@ -191,42 +188,47 @@ min-public-methods = "1"
 
 [tool.pytest.ini_options]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 # log_cli = true
 # log_cli_level = "DEBUG"
 # log_format = "%(asctime)s %(process)d %(levelname)s %(name)s:%(filename)s:%(lineno)d %(message)s"
 
-[tool.radon]
-cc_min = "B"
-show_complexity = true
-show_mi = true
-
 [tool.ruff]
 line-length = 119
 
 [tool.ruff.lint]
-select = ["ALL"]
+external = [
+  "DUO",  # dlint
+  "H",    # Openstack/hacking
+]
+select = [
+  "ALL",
+  # Since compatible with PEP257, we can check docstring style by Ruff and don't need to consider about docstring style separately:
+  # - Should the first line of a Python function docstring be in imperative mood? (ruff / pydocstyle D401)
+  #   https://zenn.dev/y_shinoda/articles/pydocstyle-d401
+  "D401",    # First line should be in imperative mood
+]
 ignore = [
-    # lint.pydocstyle
-    # Reason: Docstring may be missed since docstring-min-length is set.
-    "D101",    # Missing docstring in public class
-    "D102",    # Missing docstring in public method
-    "D103",    # Missing docstring in public function
-    "D105",    # Missing docstring in magic method
-    "D106",    # Missing docstring in public nested class
-    "D107",    # Missing docstring in __init__
-    # Reason: First line may ends with function signature for expression.
-    "D402",    # First line should not be the function’s “signature”
-    # Reason: First line may ends with ":" for expression.
-    "D415",    # First line should end with a period, question mark, or exclamation point
-    # Reason: `Line too long` is checked by flake8-bugbear.
-    "E501",    # Line too long ({width} > {limit})
+  # lint.pydocstyle
+  # Reason: Docstring may be missed since docstring-min-length is set.
+  "D101",    # Missing docstring in public class
+  "D102",    # Missing docstring in public method
+  "D103",    # Missing docstring in public function
+  "D105",    # Missing docstring in magic method
+  "D106",    # Missing docstring in public nested class
+  "D107",    # Missing docstring in __init__
+  # Reason: First line may ends with function signature for expression.
+  "D402",    # First line should not be the function’s “signature”
+  # Reason: First line may ends with ":" for expression.
+  "D415",    # First line should end with a period, question mark, or exclamation point
+  # Reason: `Line too long` is checked by flake8-bugbear.
+  "E501",    # Line too long ({width} > {limit})
 ]
 unfixable = [
-    # When fix `return a and b != ""` as `return a and b`, mypy will report warning:
-    #   error: Incompatible return value type (got "Union[Literal[False], str]", expected "bool")  [return-value]
-    "PLC1901",
+  # When fix `return a and b != ""` as `return a and b`, mypy will report warning:
+  #   error: Incompatible return value type (got "Union[Literal[False], str]", expected "bool")  [return-value]
+  "PLC1901",
 ]
 
 [tool.ruff.lint.isort]

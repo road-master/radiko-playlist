@@ -6,7 +6,6 @@ from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
 from typing import Generic
-from typing import Mapping
 from typing import TypeVar
 
 from defusedxml import ElementTree
@@ -16,6 +15,8 @@ from radikoplaylist.exceptions import NoAvailableUrlError
 from radikoplaylist.requester import Requester
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     # - defusedxml lacks an Element class · Issue #48 · tiran/defusedxml
     #   https://github.com/tiran/defusedxml/issues/48#issuecomment-1511284750
     from xml.etree.ElementTree import Element  # nosec B405
@@ -76,7 +77,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
 
     @classmethod
     def get_playlist_create_url(cls, string_xml: str) -> str:
-        """Parses XML and extract target URL to create playlist."""
+        """Parse XML and extract target URL to create playlist."""
         root = ElementTree.fromstring(string_xml, forbid_dtd=True)
         list_url = root.findall(".//url[@areafree='1']")
         list_playlist_create_url = [
@@ -86,7 +87,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
 
     @classmethod
     def strip_playlist_create_url(cls, url: Element) -> str:
-        """Strips playlist create URL."""
+        """Strip playlist create URL."""
         element = url.find("./playlist_create_url")
         if element is None:
             msg = "playlist_create_url element not found"
@@ -98,7 +99,7 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
 
     @classmethod
     def filter_playlist_create_url(cls, list_playlist_create_url: list[str]) -> str:
-        """Filters playlist create URL.
+        """Filter playlist create URL.
 
         This method is the part divided from get_playlist_create_url() since radon grades unified method as B.
         """
