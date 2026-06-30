@@ -101,9 +101,12 @@ class TimeFreeMasterPlaylistRequest(MasterPlaylistRequest):
         now = datetime.datetime.now(tz=TimeFreeMasterPlaylistRequest.JST)
         start = datetime.datetime(1970, 1, 1, tzinfo=TimeFreeMasterPlaylistRequest.JST)
         micro_second = datetime.timedelta.total_seconds(now - start) * 1000
-        # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
-        #   DUO130: Flake8 is using this.
-        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec
+        # Reason: Switching to SHA256 would break protocol compatibility because radiko.jp's JavaScript
+        # uses MD5_hexhash() for this non-cryptographic UID (lsid parameter); MD5 is not used for
+        # security here:
+        # - semgrep-rules: insecure-hash-algorithms-md5.yaml (official rule source)
+        #   https://raw.githubusercontent.com/semgrep/semgrep-rules/develop/python/lang/security/insecure-hash-algorithms-md5.yaml
+        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec # nosemgrep: python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5
 
 
 class TimeFree30DayMasterPlaylistRequest(MasterPlaylistRequest):
@@ -141,6 +144,9 @@ class TimeFree30DayMasterPlaylistRequest(MasterPlaylistRequest):
         now = datetime.datetime.now(tz=TimeFree30DayMasterPlaylistRequest.JST)
         start = datetime.datetime(1970, 1, 1, tzinfo=TimeFree30DayMasterPlaylistRequest.JST)
         micro_second = datetime.timedelta.total_seconds(now - start) * 1000
-        # Reason: 2023-02-06 Javascript in radiko.jp still use MD5_hexhash().
-        #   DUO130: Flake8 is using this.
-        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec
+        # Reason: Switching to SHA256 would break protocol compatibility because radiko.jp's JavaScript
+        # uses MD5_hexhash() for this non-cryptographic UID (lsid parameter); MD5 is not used for
+        # security here:
+        # - semgrep-rules: insecure-hash-algorithms-md5.yaml (official rule source)
+        #   https://raw.githubusercontent.com/semgrep/semgrep-rules/develop/python/lang/security/insecure-hash-algorithms-md5.yaml
+        return hashlib.md5(str(rnd + micro_second).encode("utf-8")).hexdigest()  # noqa: S324 DUO130 RUF100 # nosec # nosemgrep: python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5

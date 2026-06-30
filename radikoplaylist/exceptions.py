@@ -1,5 +1,9 @@
 """This module implements exceptions for this package."""
 
+# This command prevents docformatter from removing blank lines in docstring against PEP8 (conflicts with Ruff (Black))
+# - The docformatter removes blank line against PEP8 (conflicts with Ruff (Black)) · Issue #350 · PyCQA/docformatter
+#   https://github.com/PyCQA/docformatter/issues/350
+
 
 class Error(Exception):
     """Base class for exceptions in this module.

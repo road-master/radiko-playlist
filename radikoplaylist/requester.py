@@ -5,15 +5,15 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from collections.abc import Mapping
-
 import requests
 from requests import Response
 from requests import Timeout
 
 from radikoplaylist.exceptions import BadHttpStatusCodeError
 from radikoplaylist.exceptions import HttpRequestTimeoutError
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class Requester:

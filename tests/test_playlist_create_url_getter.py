@@ -17,7 +17,12 @@ if TYPE_CHECKING:
     #   https://github.com/tiran/defusedxml/issues/48#issuecomment-1511284750
     from xml.etree.ElementTree import Element  # nosec B405
 
-
+HTML_PLAYLIST_CREATE_URL = dedent("""\
+    <?xml version="1.0"?>
+    <data>
+        <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>
+    </data>
+""")
 HTML_PLAYLIST_CREATE_URL_ELEMENT_NOT_FOUND = dedent("""\
     <?xml version="1.0"?>
     <data>
@@ -71,14 +76,7 @@ class TestPlaylistCreateUrlGetter:
 
     def test_strip_playlist_create_url(self) -> None:
         """Method strip_playlist_create_url should return appropriate URL."""
-        element_url = ElementTree.fromstring(
-            """<?xml version="1.0"?>
-            <data>
-                <playlist_create_url>https://radiko.jp/v2/api/ts/playlist.m3u8</playlist_create_url>"
-            </data>
-            """,
-            forbid_dtd=True,
-        )
+        element_url = ElementTree.fromstring(HTML_PLAYLIST_CREATE_URL, forbid_dtd=True)
         url = LivePlaylistCreateUrlGetter.strip_playlist_create_url(element_url)
         assert url == "https://radiko.jp/v2/api/ts/playlist.m3u8"
 
