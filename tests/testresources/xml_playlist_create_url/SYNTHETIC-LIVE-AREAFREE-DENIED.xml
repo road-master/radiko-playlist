@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urls>
+    <url areafree="1" max_delay="60" timefree="0">
+        <playlist_create_url>https://c-rpaa.smartstream.ne.jp/so/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="0" max_delay="60" timefree="0">
+        <playlist_create_url>https://f-radiko.smartstream.ne.jp/DUMMY/_definst_/simul-stream.stream/playlist.m3u8</playlist_create_url>
+    </url>
+</urls>

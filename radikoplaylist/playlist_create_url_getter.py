@@ -5,6 +5,7 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
+from typing import ClassVar
 from typing import Generic
 from typing import TypeVar
 
@@ -69,21 +70,37 @@ TypeVarHost = TypeVar("TypeVarHost", bound=UrlChecker)
 class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
     """Implements getting process URL to create playlist."""
 
+    # Free accounts can only stream in-area endpoints; radiko's CDN now enforces
+    # premium authentication on some area-free hosts (403 for free accounts).
+    PREFER_IN_AREA_WITHOUT_PREMIUM: ClassVar[bool] = False
+
     @classmethod
     def get(cls, station_id: str, headers: Mapping[str, str | bytes]) -> str:
         url = "https://radiko.jp/v3/station/stream/pc_html5/" + station_id + ".xml"
         response = Requester.get(url, headers)
-        return cls.get_playlist_create_url(response.text)
+        return cls.get_playlist_create_url(response.text, has_premium=cls.has_premium_session(headers))
+
+    @staticmethod
+    def has_premium_session(headers: Mapping[str, str | bytes]) -> bool:
+        """Check whether headers carry a radiko premium session cookie."""
+        cookie = headers.get("Cookie", "")
+        cookie_text = cookie.decode("utf-8") if isinstance(cookie, bytes) else cookie
+        return "radiko_session=" in cookie_text
 
     @classmethod
-    def get_playlist_create_url(cls, string_xml: str) -> str:
-        """Parse XML and extract target URL to create playlist."""
+    def get_playlist_create_url(cls, string_xml: str, *, has_premium: bool = False) -> str:
+        """Parse XML and extract target URL to create playlist.
+
+        Collects both in-area (areafree="0") and area-free (areafree="1") URLs. Preference order depends on
+        PREFER_IN_AREA_WITHOUT_PREMIUM and has_premium.
+        """
         root = ElementTree.fromstring(string_xml, forbid_dtd=True)
-        list_url = root.findall(".//url[@areafree='1']")
-        list_playlist_create_url = [
-            cls.strip_playlist_create_url(url) for url in list_url if url.attrib["timefree"] == cls.time_free()
-        ]
-        return cls.filter_playlist_create_url(list_playlist_create_url)
+        list_url = [url for url in root.findall(".//url") if url.get("timefree") == cls.time_free()]
+        in_area = [cls.strip_playlist_create_url(url) for url in list_url if url.get("areafree") == "0"]
+        area_free = [cls.strip_playlist_create_url(url) for url in list_url if url.get("areafree") == "1"]
+        if cls.PREFER_IN_AREA_WITHOUT_PREMIUM and not has_premium:
+            return cls.filter_playlist_create_url(in_area + area_free)
+        return cls.filter_playlist_create_url(area_free + in_area)
 
     @classmethod
     def strip_playlist_create_url(cls, url: Element) -> str:
@@ -104,7 +121,6 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
         This method is the part divided from get_playlist_create_url() since radon grades unified method as B.
         """
         host = cls.create_host()
-        candidacy = []
         try:
             candidacy = [
                 playlist_create_url
@@ -113,10 +129,13 @@ class PlaylistCreateUrlGetter(Generic[TypeVarHost]):
             ]
         except FoundFastestHostToDownload as error:
             return str(error)
-        try:
+        if candidacy:
             return candidacy[0]
-        except IndexError as error:  # pragma: no cover
-            raise NoAvailableUrlError(list_playlist_create_url) from error
+        if list_playlist_create_url:
+            msg = f"All candidate URLs are FFmpeg-unsupported: {list_playlist_create_url}"
+            raise NoAvailableUrlError(msg)
+        msg = f"No playlist create URL found in XML for timefree={cls.time_free()}"
+        raise NoAvailableUrlError(msg)
 
     @classmethod
     @abstractmethod
@@ -154,6 +173,8 @@ class LivePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[LiveUrlChecker]):
 class TimeFreePlaylistCreateUrlGetter(PlaylistCreateUrlGetter[TimeFreeUrlChecker]):
     """Implements getting process Time Free URL to create playlist."""
 
+    PREFER_IN_AREA_WITHOUT_PREMIUM: ClassVar[bool] = True
+
     @classmethod
     @abstractmethod
     def time_free(cls) -> str:
@@ -177,6 +198,8 @@ class TimeFree30DayPlaylistCreateUrlGetter(PlaylistCreateUrlGetter[TimeFreeUrlCh
     XML filtering as TimeFreePlaylistCreateUrlGetter since the API XML response does not distinguish between 7-day and
     30-day content. The distinction is made at the query parameter level (type=c vs type=b).
     """
+
+    PREFER_IN_AREA_WITHOUT_PREMIUM: ClassVar[bool] = True
 
     @classmethod
     @abstractmethod
