@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urls>
+    <url areafree="1" max_delay="60" timefree="1">
+        <playlist_create_url>https://tf-c-rpaa-radiko.smartstream.ne.jp/tf/playlist.m3u8</playlist_create_url>
+    </url>
+    <url areafree="1" max_delay="60" timefree="1">
+        <playlist_create_url>https://tf-f-rpaa-radiko.smartstream.ne.jp/tf/playlist.m3u8</playlist_create_url>
+    </url>
+</urls>

@@ -84,11 +84,17 @@ The library follows a multi-step authentication and URL retrieval flow:
 2. **Playlist Create URL Discovery** ([playlist_create_url_getter.py](radikoplaylist/playlist_create_url_getter.py))
    - Fetches station XML metadata from `https://radiko.jp/v3/station/stream/pc_html5/{station_id}.xml`
    - Parses XML to find `playlist_create_url` elements
-   - Filters URLs based on:
-     - Area-free availability (`areafree='1'`)
-     - Time-free mode (`timefree` attribute: "0" for live, "1" for time-free)
-     - FFmpeg compatibility (excludes certain CDN hosts that FFmpeg can't handle)
-   - For time-free: prioritizes `radiko.jp` hosts (fastest) via exception-based control flow
+   - Live selects only `areafree='1'` (area-free) URLs matching `timefree='0'` — unchanged historical behavior,
+     with no in-area fallback
+   - Time-free (7-day and 30-day, both via the shared `TimeFreePlaylistCreateUrlGetterBase`) considers both
+     `areafree='1'` (area-free) and `areafree='0'` (in-area) URLs matching `timefree='1'`, and orders them by
+     preference before applying the FFmpeg-compatibility filter: in-area first when no `radiko_session` cookie is
+     present — radiko's CDN enforces premium authentication on some area-free hosts (e.g. `dr-wowza.radiko-cf.com`),
+     so free accounts get `403` there even for in-area stations; area-free first when a premium session is present
+   - FFmpeg compatibility filter excludes certain CDN hosts that FFmpeg can't handle, applied across the candidate list
+   - For time-free: prioritizes `radiko.jp` hosts (fastest) via exception-based control flow, regardless of ordering
+   - Raises `NoAvailableUrlError` only when the candidate list is empty (no URL in XML) or every candidate is
+     FFmpeg-unsupported; the exception message distinguishes the two cases
    - Three implementations: `LivePlaylistCreateUrlGetter`, `TimeFreePlaylistCreateUrlGetter`, and `TimeFree30DayPlaylistCreateUrlGetter`
    - Note: Both 7-day and 30-day timefree use the same XML filtering (`timefree='1'`); the distinction is in the query parameter (`type=b` vs `type=c`)
 
@@ -164,6 +170,10 @@ The library contains complex URL filtering to work around FFmpeg compatibility i
 - **Unsupported hosts** (defined in `UrlChecker`): `c-rpaa.smartstream.ne.jp`, `si-c-radiko.smartstream.ne.jp`, `si-f-radiko.smartstream.ne.jp`
 - **Time-free specific unsupported**: `tf-c-rpaa-radiko.smartstream.ne.jp`, `tf-f-rpaa-radiko.smartstream.ne.jp`, `rpaa.smartstream.ne.jp`
 - **Preferred host** for time-free: `radiko.jp` (detected via `is_fastest_host_to_download()` and returned immediately using exception-based control flow)
+- **Area-free vs in-area preference**: live selects only area-free URLs (no fallback). Time-free
+  (`TimeFreePlaylistCreateUrlGetterBase.get_playlist_create_url()`) orders in-area first unless
+  `PlaylistCreateUrlGetter.has_premium_session()` detects a premium session by checking for `radiko_session=` in
+  the `Cookie` header already produced by `Authorization.auth()`, in which case area-free is ordered first
 
 ## Code Quality Standards
 
