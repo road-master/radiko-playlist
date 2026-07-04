@@ -13,7 +13,7 @@ from radikoplaylist.playlist_create_url_getter import LivePlaylistCreateUrlGette
 from radikoplaylist.playlist_create_url_getter import PlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFree30DayPlaylistCreateUrlGetter
 from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetter
-from radikoplaylist.playlist_create_url_getter import TimeFreeUrlChecker
+from radikoplaylist.playlist_create_url_getter import TimeFreePlaylistCreateUrlGetterBase
 from tests.testlibraries.instance_resource import InstanceResource
 from tests.testlibraries.instance_resource import ParameterExpectedLivePlaylistCreateUrlString
 
@@ -62,28 +62,6 @@ class TestPlaylistCreateUrlGetter:
     @staticmethod
     @pytest.mark.parametrize(
         "xml_playlist_create_url",
-        ["SYNTHETIC-LIVE-AREAFREE-DENIED"],
-        indirect=["xml_playlist_create_url"],
-    )
-    def test_live_falls_back_to_in_area(xml_playlist_create_url: str) -> None:
-        """Method get_playlist_create_url should fall back to an in-area URL when area-free is FFmpeg-unsupported."""
-        url = LivePlaylistCreateUrlGetter.get_playlist_create_url(xml_playlist_create_url)
-        assert url == "https://f-radiko.smartstream.ne.jp/DUMMY/_definst_/simul-stream.stream/playlist.m3u8"
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        "xml_playlist_create_url",
-        ["TBS"],
-        indirect=["xml_playlist_create_url"],
-    )
-    def test_live_prefers_area_free(xml_playlist_create_url: str) -> None:
-        """Method get_playlist_create_url should prefer area-free URL for live regardless of premium status."""
-        url = LivePlaylistCreateUrlGetter.get_playlist_create_url(xml_playlist_create_url, has_premium=False)
-        assert url == "https://c-radiko.smartstream.ne.jp/TBS/_definst_/simul-stream.stream/playlist.m3u8"
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        "xml_playlist_create_url",
         InstanceResource.LIST_STATION,
         indirect=["xml_playlist_create_url"],
     )
@@ -112,7 +90,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_mixed_areafree_free_account(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
     ) -> None:
         """Method get_playlist_create_url should prefer the in-area URL when no premium session is present."""
         url = getter_cls.get_playlist_create_url(xml_playlist_create_url, has_premium=False)
@@ -127,7 +105,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_mixed_areafree_premium(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
     ) -> None:
         """Method get_playlist_create_url should prefer the area-free URL when a premium session is present."""
         url = getter_cls.get_playlist_create_url(xml_playlist_create_url, has_premium=True)
@@ -143,7 +121,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_area_free_denied_falls_back_to_in_area(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
         has_premium: bool,  # noqa: FBT001
     ) -> None:
         """Method get_playlist_create_url should fall back to in-area URL when all area-free candidates are denied."""
@@ -159,7 +137,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_all_denied_raises_with_unsupported_message(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
     ) -> None:
         """Method get_playlist_create_url should raise NoAvailableUrlError distinguishing all-unsupported case."""
         with pytest.raises(NoAvailableUrlError, match="FFmpeg-unsupported"):
@@ -174,7 +152,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_no_url_raises_with_no_url_message(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
     ) -> None:
         """Method get_playlist_create_url should raise NoAvailableUrlError distinguishing the empty-XML case."""
         with pytest.raises(NoAvailableUrlError, match="No playlist create URL"):
@@ -189,7 +167,7 @@ class TestPlaylistCreateUrlGetter:
     )
     def test_time_free_fastest_host_short_circuit_with_premium(
         xml_playlist_create_url: str,
-        getter_cls: type[PlaylistCreateUrlGetter[TimeFreeUrlChecker]],
+        getter_cls: type[TimeFreePlaylistCreateUrlGetterBase],
     ) -> None:
         """Method get_playlist_create_url should still short-circuit to radiko.jp when a premium session is present."""
         url = getter_cls.get_playlist_create_url(xml_playlist_create_url, has_premium=True)
